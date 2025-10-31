@@ -2,9 +2,10 @@ import torch
 import torchvision
 import os
 import random
-from PIL import Image
+from PIL import Image, ImageFilter
 from diffusers import AutoPipelineForText2Image, AutoPipelineForImage2Image
 from diffusers.utils import load_image
+import io
 import numpy as np
 import argparse
 from collections import Counter, defaultdict
@@ -160,9 +161,10 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             ).images[0]
 
             image = image.resize((args.image_size, args.image_size), resample=resample_filter)
+            image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.3))
 
-            save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
-            image.save(save_path)
+            save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.jpeg")
+            image_blurred.save(save_path, format="JPEG", quality=90)
             total_generated += 1
 
     print(f"Total generated: {total_generated}")
@@ -174,7 +176,7 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", type=str, default="./data/food-101/generated")
     parser.add_argument("--num_styles", type=int, default=5)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.8)
-    parser.add_argument("--refiner_cutoff", type=int, default=0.85)
+    parser.add_argument("--refiner_cutoff", type=float, default=0.85)
     parser.add_argument("--steps", type=int, default=35)
     parser.add_argument("--image_size", type=int, default=512)
 
