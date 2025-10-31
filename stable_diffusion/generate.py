@@ -136,6 +136,8 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
     num_inference_steps = args.steps
 
     total_generated = 0
+
+    resample_filter = Image.Resampling.LANCZOS
     for class_name, num_to_gen in class_to_gen.items():
         print(f"Generating {num_to_gen} images for {class_name}")
         class_output_dir = os.path.join(args.output_dir, class_name)
@@ -157,6 +159,8 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
                 denoising_end=refiner_cutoff,
             ).images[0]
 
+            image = image.resize((args.image_size, args.image_size), resample=resample_filter)
+
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
             image.save(save_path)
             total_generated += 1
@@ -172,6 +176,7 @@ if __name__ == "__main__":
     parser.add_argument("--ip_adapter_scale", type=float, default=0.8)
     parser.add_argument("--refiner_cutoff", type=int, default=0.85)
     parser.add_argument("--steps", type=int, default=35)
+    parser.add_argument("--image_size", type=int, default=512)
 
     args = parser.parse_args()
 
