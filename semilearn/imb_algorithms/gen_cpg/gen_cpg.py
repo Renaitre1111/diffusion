@@ -19,10 +19,10 @@ from semilearn.datasets.cv_datasets.datasetbase import BasicDataset
 from PIL import Image
 import math
 
-@IMB_ALGORITHMS.register('cpg')
-class CPG(ImbAlgorithmBase):
+@IMB_ALGORITHMS.register('gen_cpg')
+class Gen_CPG(ImbAlgorithmBase):
     def __init__(self, args, net_builder, tb_log=None, logger=None):
-        super(CPG, self).__init__(args, net_builder, tb_log, logger)
+        super(Gen_CPG, self).__init__(args, net_builder, tb_log, logger)
 
         #warm_up epoch
         self.warm_up = args.warm_up
@@ -70,8 +70,8 @@ class CPG(ImbAlgorithmBase):
         self.data = self.dataset_dict['data']
         self.targets = self.dataset_dict['targets']
         self.noised_targets = self.dataset_dict['noised_targets']
-        self.lb_idx =  self.dataset_dict['lb_idx']
-        self.ulb_idx =  self.dataset_dict['ulb_idx']
+        self.lb_idx = self.dataset_dict['lb_idx']
+        self.ulb_idx = self.dataset_dict['ulb_idx']
 
         self.mean, self.std = {}, {}
 
@@ -121,6 +121,40 @@ class CPG(ImbAlgorithmBase):
                                 transforms.ToTensor(),
                                 transforms.Normalize(self.mean[self.dataset], self.std[self.dataset])
                                 ])
+
+        if self.args.generated_data_dir is not None:
+            gen_data, gen_targets, gen_noised_targets, gen_idx = self._load_generated_data(self.args.generated_data_dir)
+            self.data = np.concatenate((self.data, gen_data), axis=0)
+            self.targets = np.concatenate((self.targets, gen_targets), axis=0)
+            self.noised_targets = np.concatenate((self.noised_targets, gen_noised_targets), axis=0)
+            self.lb_idx = np.concatenate((self.lb_idx, gen_idx), axis=0)
+
+            new_lb_data = self.data[self.lb_idx]
+            new_lb_targets = self.targets[self.lb_idx]
+            new_lb_noised_targets = self.noised_targets[self.lb_idx]
+            train_lb_dataset = BasicDataset(
+                img_idx=self.lb_idx,
+                data=new_lb_data,
+                targets=new_lb_targets,
+                noised_targets=new_lb_noised_targets,
+                num_classes=self.num_classes,
+                is_ulb=False,
+                weak_transform=self.transform_weak,
+                strong_transform=self.transform_strong,
+                onehot=False,
+            )
+        
+        self.dataset['train_lb'] = train_lb_dataset
+        self.loader_dict['train_lb'] = get_data_loader(
+            self.args,
+            train_lb_dataset,
+            batch_size=self.args.batch_size,
+            data_sampler=self.args.train_sampler,
+            num_iters=self.num_train_iters,
+            num_epochs=self.epochs,
+            num_workers=self.args.num_workers,
+            distributed=self.distributed
+        )
 
         # compute lb dist
         lb_class_dist = [0 for _ in range(self.num_classes)]
@@ -172,6 +206,12 @@ class CPG(ImbAlgorithmBase):
 
         gen_data = np.array(gen_data)
         gen_targets = np.array(gen_targets)
+        gen_noise_targets = gen_targets
+        max_existing_idx = max(np.max(self.lb_idx), np.max(self.ulb_idx))
+
+        gen_idx = np.arange(max_existing_idx + 1, max_existing_idx + 1 + len(gen_data))
+
+        return gen_data, gen_targets, gen_noise_targets, gen_idx
 
     def train(self):
         """
@@ -549,13 +589,15 @@ class CPG(ImbAlgorithmBase):
                 lb_smooth.scatter_(1, lb.unsqueeze(1), 1.0 - self.args.smoothing)
                 lb = lb_smooth
 
-                sup_loss = self.ce_loss(logits_x_lb_w + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), lb, reduction='mean')
+                # sup_loss = self.ce_loss(logits_x_lb_w + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), lb, reduction='mean')
+                sup_loss = self.ce_loss(logits_x_lb_w, lb, reduction='mean')
 
                 aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
                 aux_pseudo_label_w_smooth = torch.zeros(self.args.uratio * num_lb, self.num_classes).cuda(self.args.gpu)
                 aux_pseudo_label_w_smooth.fill_(self.args.smoothing / (self.num_classes - 1))
                 aux_pseudo_label_w_smooth.scatter_(1, aux_pseudo_label_w.unsqueeze(1), 1.0 - self.args.smoothing)
-                aux_loss = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w_smooth, reduction='mean') + self.ce_loss(aux_logits_x_lb_w + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), lb, reduction='mean')
+                # aux_loss = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w_smooth, reduction='mean') + self.ce_loss(aux_logits_x_lb_w + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), lb, reduction='mean')
+                aux_loss = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w_smooth, reduction='mean') + self.ce_loss(aux_logits_x_lb_w, lb, reduction='mean')
 
                 mask = torch.tensor([False]).cuda(self.args.gpu)
             else:
