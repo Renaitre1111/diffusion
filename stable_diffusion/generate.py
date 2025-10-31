@@ -141,7 +141,7 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
     resample_filter = Image.Resampling.LANCZOS
     for class_name, num_to_gen in class_to_gen.items():
         print(f"Generating {num_to_gen} images for {class_name}")
-        class_output_dir = os.path.join(args.output_dir, class_name)
+        class_output_dir = os.path.join(args.output_dir, "generated", class_name)
         os.makedirs(class_output_dir, exist_ok=True)
 
         class_idx = name_to_idx[class_name]
@@ -166,14 +166,15 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.jpeg")
             image_blurred.save(save_path, format="JPEG", quality=90)
             total_generated += 1
-
+    
+    np.save(os.path.join(args.output_dir, "class_to_idx.npy"), name_to_idx, allow_pickle=True)
     print(f"Total generated: {total_generated}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, default="./data")
     parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/food101/labeled_idx/lb_labels_50_10_450_10_exp_random_noise_0.0_seed_1_idx.npy")
-    parser.add_argument("--output_dir", type=str, default="./data/food-101/generated")
+    parser.add_argument("--output_dir", type=str, default="./data/food-101")
     parser.add_argument("--num_styles", type=int, default=5)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.8)
     parser.add_argument("--refiner_cutoff", type=float, default=0.85)
