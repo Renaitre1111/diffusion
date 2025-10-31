@@ -6,6 +6,7 @@ from PIL import Image
 from diffusers import AutoPipelineForText2Image, AutoPipelineForImage2Image
 from diffusers.utils import load_image
 import numpy as np
+import argparse
 from collections import Counter, defaultdict
 
 MODULE_STYLE = [
@@ -46,7 +47,7 @@ GLOBAL_NEGATIVE_PROMPT = (
     "anime, logo, watermark, text, signature, unreal engine"
 )
 
-config = {
+CONFIG = {
     "base_model_id": "stabilityai/stable-diffusion-xl-base-1.0",
     "refiner_model_id": "stabilityai/stable-diffusion-xl-refiner-1.0",
     "ip_adapter_repo": "h94/IP-Adapter",
@@ -54,7 +55,7 @@ config = {
     "ip_adapter_weights_file": "ip-adapter-plus_sdxl_vit-h.safetensors"
 }
 
-def create_moduler_prompt(class_name):
+def create_modular_prompt(class_name):
     style = random.choice(MODULE_STYLE)
     context = random.choice(MODULE_CONTEXT)
     view = random.choice(MODULE_VIEW)
@@ -84,14 +85,23 @@ def get_data(data_dir, lb_idx_path):
         n_max = 0
 
     class_to_gen = {classes[y]: (n_max - len(paths))
-                    for y, paths in class_to_data.items()}
+                    for y, paths in class_to_data.items() if (n_max - len(paths)) > 0}
 
-    return class_to_gen, class_to_data
+    return class_to_gen, class_to_data, classes
+
+def get_ip_adapter_images(image_paths, num_styles):
+    num_select = min(len(image_paths), num_styles)
+    selected_images = random.sample(image_paths, num_select)
+
+    pil_images = [Image.open(path).convert('RGB') for path in selected_images]
+    return pil_images
     
 def load_generation_pipeline(config, device="cuda"):
+    dtype = torch.bfloat16
+
     pipe = AutoPipelineForText2Image.from_pretrained(
         config["base_model_id"],
-        torch_dtype=torch.dtype,
+        torch_dtype=dtype,
         variant="bf16",
         use_safetensors=True
     )
@@ -100,7 +110,7 @@ def load_generation_pipeline(config, device="cuda"):
         config["refiner_model_id"],
         text_encoder_2=pipe.text_encoder_2,
         vae=pipe.vae,
-        torch_dtype=torch.dtype,
+        torch_dtype=dtype,
         variant="bf16",
         use_safetensors=True
     )
@@ -114,3 +124,60 @@ def load_generation_pipeline(config, device="cuda"):
     pipe.to(device)
     return pipe
 
+def run_generation(pipe, class_to_gen, class_to_data, classes, args):
+    if not class_to_gen:
+        return
+    
+    name_to_idx = {name: i for i, name in enumerate(classes)}
+
+    pipe.set_ip_adapter_scale(args.ip_adapter_scale)
+
+    refiner_cutoff = args.refiner_cutoff
+    num_inference_steps = args.steps
+
+    total_generated = 0
+    for class_name, num_to_gen in class_to_gen.items():
+        print(f"Generating {num_to_gen} images for {class_name}")
+        class_output_dir = os.path.join(args.output_dir, class_name)
+        os.makedirs(class_output_dir, exist_ok=True)
+
+        class_idx = name_to_idx[class_name]
+        image_paths = class_to_data[class_idx]
+
+        for i in range(num_to_gen):
+            ip_images = get_ip_adapter_images(image_paths, args.num_styles)
+
+            prompt = create_modular_prompt(class_name)
+
+            image = pipe(
+                prompt=prompt,
+                negative_prompt=GLOBAL_NEGATIVE_PROMPT,
+                ip_adapter_image=ip_images, 
+                num_inference_steps=num_inference_steps,
+                denoising_end=refiner_cutoff,
+            ).images[0]
+
+            save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
+            image.save(save_path)
+            total_generated += 1
+
+    print(f"Total generated: {total_generated}")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data_dir", type=str, default="./data")
+    parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/food101/labeled_idx/lb_labels_50_10_450_10_exp_random_noise_0.0_seed_1_idx.npy")
+    parser.add_argument("--output_dir", type=str, default="./data/food-101/generated")
+    parser.add_argument("--num_styles", type=int, default=5)
+    parser.add_argument("--ip_adapter_scale", type=float, default=0.8)
+    parser.add_argument("--refiner_cutoff", type=int, default=0.85)
+    parser.add_argument("--steps", type=int, default=35)
+
+    args = parser.parse_args()
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    class_to_gen, class_to_data, classes = get_data(args.data_dir, args.lb_idx_path)
+
+    pipe = load_generation_pipeline(CONFIG, device=device)
+    run_generation(pipe, class_to_gen, class_to_data, classes, args)
