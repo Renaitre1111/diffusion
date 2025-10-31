@@ -144,13 +144,13 @@ class Gen_CPG(ImbAlgorithmBase):
                 onehot=False,
             )
         
-        self.dataset['train_lb'] = train_lb_dataset
+        self.dataset_dict['train_lb'] = train_lb_dataset
         self.loader_dict['train_lb'] = get_data_loader(
             self.args,
             train_lb_dataset,
             batch_size=self.args.batch_size,
             data_sampler=self.args.train_sampler,
-            num_iters=self.num_train_iters,
+            num_iters=self.num_train_iter,
             num_epochs=self.epochs,
             num_workers=self.args.num_workers,
             distributed=self.distributed
