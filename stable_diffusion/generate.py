@@ -170,10 +170,10 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             ).images[0]
 
             image = image.resize((args.image_size, args.image_size), resample=resample_filter)
-            image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.3))
+            # image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.1))
 
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.jpeg")
-            image_blurred.save(save_path, format="JPEG", quality=90)
+            image.save(save_path, format="JPEG", quality=100)
             total_generated += 1
     
     np.save(os.path.join(args.output_dir, "class_to_idx.npy"), name_to_idx, allow_pickle=True)
