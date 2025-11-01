@@ -132,6 +132,7 @@ def load_generation_pipeline(config, device="cuda"):
         subfolder=config["ip_adapter_weights_dir"],
         weight_name=config["ip_adapter_weights_file"],
     )
+    refiner.to(device)
     pipe.to(device)
     return pipe
 
@@ -142,6 +143,7 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
     name_to_idx = {name: i for i, name in enumerate(classes)}
 
     pipe.set_ip_adapter_scale(args.ip_adapter_scale)
+    pipe.refiner.set_ip_adapter_scale(args.ip_adapter_scale)
 
     refiner_cutoff = args.refiner_cutoff
     num_inference_steps = args.steps
@@ -175,17 +177,16 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             image = pipe.refiner(
                 prompt=prompt,
                 negative_prompt=GLOBAL_NEGATIVE_PROMPT,
-                ip_adapter_image=ip_images,
                 image=latents, 
                 num_inference_steps=num_inference_steps,
-                denoising_end=refiner_cutoff,
+                denoising_start=refiner_cutoff,
             ).images[0]
 
             # image = image.resize((args.image_size, args.image_size), resample=resample_filter)
             image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.3))
 
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.jpeg")
-            image.save(save_path, format="JPEG", quality=100)
+            image_blurred.save(save_path, format="JPEG", quality=100)
             total_generated += 1
     
     np.save(os.path.join(args.output_dir, "class_to_idx.npy"), name_to_idx, allow_pickle=True)
