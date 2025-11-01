@@ -374,59 +374,6 @@ class Gen_CPG(ImbAlgorithmBase):
                     self.select_ulb_pseudo_label = torch.masked_select(select_ulb_unique_pseudo_label, select_ulb_unique_pseudo_label != -1)
                     self.select_ulb_pseudo_label_distribution = select_ulb_unique_pseudo_label_distribution[select_ulb_unique_pseudo_label != -1]
 
-                    # # view the distribution of select unlabeled data (include true and false pseudo labeled unlabeled data)
-                    # if not os.path.exists(os.path.join(self.args.save_dir, self.args.save_name, str(self.epoch))):
-                    #     os.makedirs(os.path.join(self.args.save_dir, self.args.save_name, str(self.epoch)))
-                    #
-                    # class_indices = np.arange(self.num_classes)
-                    #
-                    # bar_width = 0.3
-                    # index = class_indices - bar_width / 2
-                    #
-                    # record_mask_true = torch.zeros(self.num_classes).cpu()
-                    # record_mask_false = torch.zeros(self.num_classes).cpu()
-                    #
-                    # record_mask_true.index_add_(0, self.select_ulb_pseudo_label[self.select_ulb_pseudo_label==self.select_ulb_label], torch.ones_like(self.select_ulb_pseudo_label[self.select_ulb_pseudo_label==self.select_ulb_label], dtype=record_mask_true.dtype))
-                    # record_mask_false.index_add_(0, self.select_ulb_pseudo_label[self.select_ulb_pseudo_label!=self.select_ulb_label], torch.ones_like(self.select_ulb_pseudo_label[self.select_ulb_pseudo_label!=self.select_ulb_label], dtype=record_mask_false.dtype))
-                    #
-                    # self.print_fn('ulb_dist:\n' + np.array_str(np.array(self.ulb_dist.cpu())))
-                    # self.print_fn('record_mask_true:\n' + np.array_str(np.array(record_mask_true)))
-                    # self.print_fn('record_mask_false:\n' + np.array_str(np.array(record_mask_false)))
-                    # self.print_fn('record_mask:\n' + np.array_str(np.array(record_mask_true + record_mask_false)))
-                    #
-                    # fig = plt.figure(figsize=(8, 6), dpi=1000)
-                    #
-                    # ax = fig.add_subplot(111)
-                    #
-                    # bar0 = ax.bar(index, torch.log(self.ulb_dist).tolist(), width=bar_width, color='#ffffff', edgecolor='black', label='GT')
-                    # bar1 = ax.bar(index + bar_width, torch.log(record_mask_true).tolist(), width=bar_width, color='#e37663', edgecolor='black', label='TP')
-                    # for i in range(self.num_classes):
-                    #     if i == 0:
-                    #         bar2 = ax.bar(index[i] + bar_width, (record_mask_false * torch.log(record_mask_false + record_mask_true) / (record_mask_false + record_mask_true)).tolist()[i], width=bar_width, bottom=(record_mask_true * torch.log(record_mask_false + record_mask_true) / (record_mask_false + record_mask_true)).tolist()[i], color='#76a4bc', edgecolor='black', label='FP')
-                    #     else:
-                    #         bar2 = ax.bar(index[i] + bar_width, (record_mask_false * torch.log(record_mask_false + record_mask_true) / (record_mask_false + record_mask_true)).tolist()[i], width=bar_width, bottom=(record_mask_true * torch.log(record_mask_false + record_mask_true) / (record_mask_false + record_mask_true)).tolist()[i], color='#76a4bc', edgecolor='black')
-                    #
-                    # ax.set_ylim(0, max(max(np.array(torch.log(self.ulb_dist).cpu())), max(np.array(torch.log(record_mask_true + record_mask_false)))) + 1)
-                    #
-                    # ax.set_xlabel('Class index', fontsize=18)
-                    # ax.set_ylabel('Number of samples', fontsize=18)
-                    #
-                    # ax.set_xticks(class_indices)
-                    # ax.set_xticklabels([f'{i}' for i in class_indices], fontsize=18, rotation=0)
-                    #
-                    # sample_indices = np.arange(0, max(max(np.array(torch.log(self.ulb_dist).cpu())), max(np.array(torch.log(record_mask_true + record_mask_false)))) + 1, 3)
-                    #
-                    # ax.set_yticks(sample_indices)
-                    # ax.set_yticklabels([f'$e^{{{int(i)}}}$' for i in sample_indices], fontsize=18, rotation=0)
-                    #
-                    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.0), ncol=3, handlelength=2.5, handleheight=0.8, borderpad=0.2, columnspacing=0.8, fontsize=16, framealpha=0.2)
-                    #
-                    # plt.subplots_adjust(left=0.15, bottom=0.15)
-                    #
-                    # plt.savefig(os.path.join(self.args.save_dir, self.args.save_name, str(self.epoch), 'mask_true_false.pdf'))
-                    # plt.clf()
-                    # plt.close()
-
                     self.select_ulb_dist = torch.zeros(self.num_classes).cuda(self.args.gpu)
                     for item in self.select_ulb_pseudo_label:
                         self.select_ulb_dist[int(item)] += 1
