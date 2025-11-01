@@ -6,6 +6,7 @@ import random
 from PIL import Image, ImageFilter
 from diffusers import AutoPipelineForText2Image, AutoPipelineForImage2Image
 from diffusers.utils import load_image
+from transformers import CLIPVisionModelWithProjection
 import io
 import numpy as np
 import argparse
@@ -102,11 +103,18 @@ def get_ip_adapter_images(image_paths, num_styles):
 def load_generation_pipeline(config, device="cuda"):
     dtype = torch.float16
 
+    image_encoder = CLIPVisionModelWithProjection.from_pretrained(
+        config["ip_adapter_repo"],
+        subfolder="models/image_encoder",
+        torch_dtype=dtype,
+    )
+
     pipe = AutoPipelineForText2Image.from_pretrained(
         config["base_model_id"],
         torch_dtype=dtype,
         variant="fp16",
-        use_safetensors=True
+        use_safetensors=True,
+        image_encoder=image_encoder,
     )
 
     refiner = AutoPipelineForImage2Image.from_pretrained(
@@ -175,8 +183,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, default="./data")
     parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/food101/labeled_idx/lb_labels_50_10_450_10_exp_random_noise_0.0_seed_1_idx.npy")
-    parser.add_argument("--output_dir", type=str, default="./data/food-101")
-    parser.add_argument("--num_styles", type=int, default=5)
+    parser.add_argument("--output_dir", type=str, default="./data/food101/food-101")
+    parser.add_argument("--num_styles", type=int, default=1)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.8)
     parser.add_argument("--refiner_cutoff", type=float, default=0.85)
     parser.add_argument("--steps", type=int, default=35)
