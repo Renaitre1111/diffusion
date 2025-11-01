@@ -137,7 +137,6 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
 
     refiner_cutoff = args.refiner_cutoff
     num_inference_steps = args.steps
-    batch_size = args.batch_size
 
     total_generated = 0
 
@@ -150,35 +149,24 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
         class_idx = name_to_idx[class_name]
         image_paths = class_to_data[class_idx]
 
-        total_batch = math.ceil(num_to_gen / batch_size)
-
-        for i in range(0, num_to_gen, batch_size):
-            current_batch_size = min(batch_size, num_to_gen - i)
-
-            batch_prompts = []
-            batch_ip_images = []
-            
-            for _ in range(current_batch_size):
-                batch_prompts.append(create_modular_prompt(class_name))
-                batch_ip_images.append(get_ip_adapter_images(image_paths, args.num_styles))
+        for i in range(num_to_gen):
+            ip_images = get_ip_adapter_images(image_paths, args.num_styles)
+            prompt = create_modular_prompt(class_name)
 
             image = pipe(
-                prompt=batch_prompts,
+                prompt=prompt,
                 negative_prompt=GLOBAL_NEGATIVE_PROMPT,
-                ip_adapter_image=batch_ip_images, 
+                ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
                 denoising_end=refiner_cutoff,
-            ).images
+            ).images[0]
 
-            for j, image in enumerate(image):
-                file_index = i + j + 1
+            image = image.resize((args.image_size, args.image_size), resample=resample_filter)
+            image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.3))
 
-                image = image.resize((args.image_size, args.image_size), resample=resample_filter)
-                image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.3))
-
-                save_path = os.path.join(class_output_dir, f"{class_name}_{file_index}.jpeg")
-                image_blurred.save(save_path, format="JPEG", quality=90)
-                total_generated += 1
+            save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.jpeg")
+            image_blurred.save(save_path, format="JPEG", quality=90)
+            total_generated += 1
     
     np.save(os.path.join(args.output_dir, "class_to_idx.npy"), name_to_idx, allow_pickle=True)
     print(f"Total generated: {total_generated}")
@@ -188,7 +176,6 @@ if __name__ == "__main__":
     parser.add_argument("--data_dir", type=str, default="./data")
     parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/food101/labeled_idx/lb_labels_50_10_450_10_exp_random_noise_0.0_seed_1_idx.npy")
     parser.add_argument("--output_dir", type=str, default="./data/food-101")
-    parser.add_argument("--batch_size", type=int, default=32)
     parser.add_argument("--num_styles", type=int, default=5)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.8)
     parser.add_argument("--refiner_cutoff", type=float, default=0.85)
