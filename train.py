@@ -25,7 +25,7 @@ from semilearn.core.utils import (
     send_model_cuda,
 )
 from semilearn.imb_algorithms import get_imb_algorithm, name2imbalg
-from semilearn.imb_algorithms.gen_cpg import Gen_CPG
+# from semilearn.imb_algorithms.gen_cpg import Gen_CPG
 
 
 def get_config():

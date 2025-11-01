@@ -629,5 +629,5 @@ class Gen_CPG(ImbAlgorithmBase):
             SSL_Argument('--warm_up', int, 30),
             SSL_Argument('--alpha', float, 1.0),
             SSL_Argument('--smoothing', float, 0.1),
-            SSL_Argument('--generated_data_dir', str, './data/food-101'),
+            SSL_Argument('--generated_data_dir', str, './data/food101/food-101'),
         ]
