@@ -161,16 +161,28 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             ip_images = get_ip_adapter_images(image_paths, args.num_styles)
             prompt = create_modular_prompt(class_name)
 
-            image = pipe(
+            latents = pipe(
                 prompt=prompt,
                 negative_prompt=GLOBAL_NEGATIVE_PROMPT,
                 ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
                 denoising_end=refiner_cutoff,
+                output_type="latent",
+                height=args.image_size,
+                width=args.image_size
+            ).images
+
+            image = pipe.refiner(
+                prompt=prompt,
+                negative_prompt=GLOBAL_NEGATIVE_PROMPT,
+                ip_adapter_image=ip_images,
+                image=latents, 
+                num_inference_steps=num_inference_steps,
+                denoising_end=refiner_cutoff,
             ).images[0]
 
-            image = image.resize((args.image_size, args.image_size), resample=resample_filter)
-            # image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.1))
+            # image = image.resize((args.image_size, args.image_size), resample=resample_filter)
+            image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.3))
 
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.jpeg")
             image.save(save_path, format="JPEG", quality=100)
@@ -185,7 +197,7 @@ if __name__ == "__main__":
     parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/food101/labeled_idx/lb_labels_50_10_450_10_exp_random_noise_0.0_seed_1_idx.npy")
     parser.add_argument("--output_dir", type=str, default="./data/food101/food-101")
     parser.add_argument("--num_styles", type=int, default=1)
-    parser.add_argument("--ip_adapter_scale", type=float, default=0.8)
+    parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
     parser.add_argument("--refiner_cutoff", type=float, default=0.85)
     parser.add_argument("--steps", type=int, default=35)
     parser.add_argument("--image_size", type=int, default=512)
