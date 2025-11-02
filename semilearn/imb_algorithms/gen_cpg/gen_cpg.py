@@ -187,7 +187,7 @@ class Gen_CPG(ImbAlgorithmBase):
 
     def _load_generated_data(self, data_dir):
         class_to_idx = np.load(os.path.join(data_dir, 'class_to_idx.npy'), allow_pickle=True).item()
-        generated_dir = os.path.join(data_dir, "generated")
+        generated_dir = os.path.join(data_dir, self.args.dataset)
 
         crop_size = self.args.img_size
         crop_ratio = self.args.crop_ratio
@@ -201,7 +201,7 @@ class Gen_CPG(ImbAlgorithmBase):
 
             for img_name in os.listdir(class_dir):
                 img_path = os.path.join(class_dir, img_name)
-                gen_data.append(np.array(Image.open(img_path).convert('RGB').resize(int(math.floor(crop_size / crop_ratio)), int(math.floor(crop_size / crop_ratio)))))
+                gen_data.append(np.array(Image.open(img_path).convert('RGB').resize((int(math.floor(crop_size / crop_ratio)), int(math.floor(crop_size / crop_ratio))))))
                 gen_targets.append(class_idx)
 
         gen_data = np.array(gen_data)
@@ -629,5 +629,5 @@ class Gen_CPG(ImbAlgorithmBase):
             SSL_Argument('--warm_up', int, 30),
             SSL_Argument('--alpha', float, 1.0),
             SSL_Argument('--smoothing', float, 0.1),
-            SSL_Argument('--generated_data_dir', str, './data/food101/food-101'),
+            SSL_Argument('--generated_data_dir', str, './data/generated'),
         ]
