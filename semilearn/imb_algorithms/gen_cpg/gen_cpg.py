@@ -487,12 +487,6 @@ class Gen_CPG(ImbAlgorithmBase):
                 self.it += 1
 
             self.call_hook("after_train_epoch")
-            
-            if self.epoch == self.warm_up - 1:
-                if hasattr(self, 'save_dir') and self.save_dir is not None:
-                    save_path = os.path.join(self.save_dir, 'warm_up.pth')
-                    if hasattr(self, 'save_checkpoint'):
-                        self.save_checkpoint(save_path=save_path)
 
         self.call_hook("after_run")
 
