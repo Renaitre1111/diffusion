@@ -487,6 +487,12 @@ class Gen_CPG(ImbAlgorithmBase):
                 self.it += 1
 
             self.call_hook("after_train_epoch")
+            
+            if self.epoch == self.warm_up - 1:
+                if hasattr(self, 'save_dir') and self.save_dir is not None:
+                    save_path = os.path.join(self.save_dir, 'warm_up.pth')
+                    if hasattr(self, 'save_checkpoint'):
+                        self.save_checkpoint(save_path=save_path)
 
         self.call_hook("after_run")
 
@@ -592,17 +598,22 @@ class Gen_CPG(ImbAlgorithmBase):
                 aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
                 aux_loss = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w, reduction='mean') + self.ce_loss(aux_logits_x_lb_w + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), lb.argmax(dim=1), reduction='mean')
 
+                energy_w = -torch.logsumexp(logits_x_ulb_w.detach(), dim=1)
+                energy_s = -torch.logsumexp(logits_x_ulb_s.detach(), dim=1)
+                
                 # generate unlabeled targets using pseudo label hook
                 pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_w, use_hard_label=self.use_hard_label, T=self.T, softmax=False)
                 pseudo_label_s = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_s, use_hard_label=self.use_hard_label, T=self.T, softmax=False)
 
-                mask_w_s = pseudo_label_w == pseudo_label_s
-
                 # calculate mask
                 mask_w = probs_x_ulb_w.amax(dim=-1).ge(self.p_cutoff * (1.0 - self.args.smoothing))
                 mask_s = probs_x_ulb_s.amax(dim=-1).ge(self.p_cutoff * (1.0 - self.args.smoothing))
+                mask_confidence = mask_w & mask_s
+                mask_w_s = pseudo_label_w == pseudo_label_s
 
-                mask = torch.logical_and(torch.logical_and(mask_w, mask_s), mask_w_s)
+                mask_energy = (energy_w < self.args.energy_cutoff) & (energy_s < self.args.energy_cutoff)
+
+                mask = mask_confidence & mask_w_s & mask_energy
 
                 # update select_ulb_idx and its pseudo_label
                 if self.select_ulb_idx is not None and self.select_ulb_pseudo_label is not None and self.select_ulb_label is not None:
@@ -630,4 +641,5 @@ class Gen_CPG(ImbAlgorithmBase):
             SSL_Argument('--alpha', float, 1.0),
             SSL_Argument('--smoothing', float, 0.1),
             SSL_Argument('--generated_data_dir', str, './data/generated'),
+            SSL_Argument('--energy_cutoff', float, -5.0)
         ]
