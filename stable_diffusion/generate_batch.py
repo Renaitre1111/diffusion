@@ -206,7 +206,7 @@ if __name__ == "__main__":
     parser.add_argument("--refiner_cutoff", type=float, default=0.85)
     parser.add_argument("--steps", type=int, default=35)
     parser.add_argument("--image_size", type=int, default=512)
-    parser.add_argument("--batch_size", type=int, default=16)
+    parser.add_argument("--batch_size", type=int, default=10)
     parser.add_argument("--num_to_gen", type=int, default=200)
 
     args = parser.parse_args()
