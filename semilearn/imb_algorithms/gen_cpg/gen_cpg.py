@@ -501,28 +501,36 @@ class Gen_CPG(ImbAlgorithmBase):
                 # compute cross entropy loss for labeled data
                 sup_loss = self.ce_loss(logits_x_lb_w, lb, reduction='mean')
 
-                probs_x_ulb_w = self.compute_prob((logits_x_ulb_w))
-                probs_x_ulb_s = self.compute_prob((logits_x_ulb_s))
+                with torch.no_grad():
+                    energy_w = -torch.logsumexp(logits_x_ulb_w.detach(), dim=1)
+                    s_energy_quality = torch.sigmoid(-energy_w - self.args.energy_cutoff)
 
-                aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
-                aux_loss = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w, reduction='mean') + self.ce_loss(aux_logits_x_lb_w, lb.argmax(dim=1), reduction='mean')
-
-                energy_w = -torch.logsumexp(logits_x_ulb_w.detach(), dim=1)
-                energy_s = -torch.logsumexp(logits_x_ulb_s.detach(), dim=1)
+                    probs_x_ulb_w = self.compute_prob((logits_x_ulb_w))
+                    pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_w, use_hard_label=True, T=self.T, softmax=False)
+                    
+                    probs_x_ulb_s = self.compute_prob((logits_x_ulb_s))
+                    pseudo_label_s = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_s, use_hard_label=True, T=self.T, softmax=False)
                 
-                # generate unlabeled targets using pseudo label hook
-                pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_w, use_hard_label=self.use_hard_label, T=self.T, softmax=False)
-                pseudo_label_s = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_s, use_hard_label=self.use_hard_label, T=self.T, softmax=False)
+                    mask_high_conf = probs_x_ulb_w.amax(dim=-1).ge(self.p_cutoff * (1.0 - self.args.smoothing))
+                    mask_consistent = (pseudo_label_w == pseudo_label_s)
 
-                # calculate mask
-                mask_w = probs_x_ulb_w.amax(dim=-1).ge(self.p_cutoff * (1.0 - self.args.smoothing))
-                mask_s = probs_x_ulb_s.amax(dim=-1).ge(self.p_cutoff * (1.0 - self.args.smoothing))
-                mask_confidence = mask_w & mask_s
-                mask_w_s = pseudo_label_w == pseudo_label_s
+                    mask_band1 = mask_high_conf & mask_consistent
+                    mask_band2 = mask_high_conf & ~mask_consistent
 
-                mask_energy = (energy_w < self.args.energy_cutoff) & (energy_s < self.args.energy_cutoff)
+                    w_i = torch.zeros_like(probs_x_ulb_w.amax(dim=-1))
 
-                mask = mask_confidence & mask_w_s & mask_energy
+                    w_i[mask_band1] = 0.5 + 0.5 * s_energy_quality[mask_band1]
+                    w_i[mask_band2] = 0.1 + 0.3 * s_energy_quality[mask_band2]
+                
+                aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
+                aux_loss_lb = self.ce_loss(aux_logits_x_lb_w, lb.argmax(dim=1), reduction='mean')
+
+                unweighted_aux_loss_ulb = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w, reduction='none')
+                weighted_aux_loss_ulb = (unweighted_aux_loss_ulb * w_i).mean()
+
+                aux_loss = aux_loss_lb + weighted_aux_loss_ulb
+
+                mask = mask_band1
 
                 # update select_ulb_idx and its pseudo_label
                 if self.select_ulb_idx is not None and self.select_ulb_pseudo_label is not None and self.select_ulb_label is not None:
