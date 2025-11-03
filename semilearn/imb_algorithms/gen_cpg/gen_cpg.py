@@ -337,9 +337,9 @@ class Gen_CPG(ImbAlgorithmBase):
                         num_to_sample = num_to_add_per_class[i]
                         if num_to_sample == 0 or len(self.candidate_data[i]) == 0:
                             continue
-                        sampled_idx = np.random.choice(self.candidate_data[i], num_to_sample, replace=True)
-                        new_gen_data.append(self.candidate_data[i][j] for j in sampled_idx)
-                        new_gen_targets.append(self.candidate_targets[i][j] for j in sampled_idx)
+                        sampled_idx = np.random.choice(len(self.candidate_data[i]), num_to_sample, replace=True)
+                        new_gen_data.extend([self.candidate_data[i][j] for j in sampled_idx])
+                        new_gen_targets.extend([self.candidate_targets[i][j] for j in sampled_idx])
                         total_sampled += num_to_sample
                     if total_sampled > 0:
                         new_gen_data = np.array(new_gen_data)
