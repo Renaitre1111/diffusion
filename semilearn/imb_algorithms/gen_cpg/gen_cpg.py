@@ -413,16 +413,6 @@ class Gen_CPG(ImbAlgorithmBase):
                 # compute cross entropy loss for labeled data
                 sup_loss = self.ce_loss(logits_x_lb_w, lb, reduction='mean')
 
-                # compute probability
-                before_refined_select_ulb_dist = torch.where(self.select_ulb_dist <= min(self.lb_dist), 0, self.select_ulb_dist)
-
-                sorted_select_ulb_dist, _ = torch.sort(torch.unique(before_refined_select_ulb_dist))
-
-                if len(sorted_select_ulb_dist) == 1:
-                    refined_select_ulb_dist = torch.ones_like(before_refined_select_ulb_dist)
-                else:
-                    refined_select_ulb_dist = torch.where(before_refined_select_ulb_dist == 0, sorted_select_ulb_dist[1], before_refined_select_ulb_dist)
-
                 probs_x_ulb_w = self.compute_prob((logits_x_ulb_w))
                 probs_x_ulb_s = self.compute_prob((logits_x_ulb_s))
 
