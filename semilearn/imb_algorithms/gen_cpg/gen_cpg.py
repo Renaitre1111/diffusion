@@ -411,7 +411,7 @@ class Gen_CPG(ImbAlgorithmBase):
                 lb_smooth.scatter_(1, lb.unsqueeze(1), 1.0 - self.args.smoothing)
                 lb = lb_smooth
                 # compute cross entropy loss for labeled data
-                sup_loss = self.ce_loss(logits_x_lb_w + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), lb, reduction='mean')
+                sup_loss = self.ce_loss(logits_x_lb_w, lb, reduction='mean')
 
                 # compute probability
                 before_refined_select_ulb_dist = torch.where(self.select_ulb_dist <= min(self.lb_dist), 0, self.select_ulb_dist)
@@ -423,11 +423,11 @@ class Gen_CPG(ImbAlgorithmBase):
                 else:
                     refined_select_ulb_dist = torch.where(before_refined_select_ulb_dist == 0, sorted_select_ulb_dist[1], before_refined_select_ulb_dist)
 
-                probs_x_ulb_w = self.compute_prob((logits_x_ulb_w + torch.log(refined_select_ulb_dist / torch.sum(refined_select_ulb_dist))).detach())
-                probs_x_ulb_s = self.compute_prob((logits_x_ulb_s + torch.log(refined_select_ulb_dist / torch.sum(refined_select_ulb_dist))).detach())
+                probs_x_ulb_w = self.compute_prob((logits_x_ulb_w))
+                probs_x_ulb_s = self.compute_prob((logits_x_ulb_s))
 
                 aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
-                aux_loss = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w, reduction='mean') + self.ce_loss(aux_logits_x_lb_w + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), lb.argmax(dim=1), reduction='mean')
+                aux_loss = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w, reduction='mean') + self.ce_loss(aux_logits_x_lb_w, lb.argmax(dim=1), reduction='mean')
 
                 energy_w = -torch.logsumexp(logits_x_ulb_w.detach(), dim=1)
                 energy_s = -torch.logsumexp(logits_x_ulb_s.detach(), dim=1)
