@@ -37,18 +37,9 @@ class Gen_CPG(ImbAlgorithmBase):
         if args.dataset == 'food101':
             self.update_step = 5
             self.memory_step = 5
-        if args.dataset == 'svhn':
+        if args.dataset == 'stl10':
             self.update_step = 5
             self.memory_step = 5
-
-        # augment r and dim
-        self.sim_num = None
-        self.feat_aug_r = None
-        self.fd = self.model.num_features
-
-        # uniform class feature center
-        self.optim_cfc = None
-        self.cfcd = self.model.num_features
 
         # adaptive labeled (include the pseudo labeled) data and its dataloader
         self.current_x = None
@@ -229,77 +220,6 @@ class Gen_CPG(ImbAlgorithmBase):
                 self.lb_select_ulb_dist = self.lb_dist
                 self.select_ulb_dist = torch.ones(self.num_classes).cuda(self.args.gpu)
 
-            # self.warm_up select unlabeled data but still use labeled data only to compute loss
-            elif self.epoch == self.warm_up:
-                self.adaptive_lb_dest_loader = self.loader_dict['train_lb']
-                self.lb_select_ulb_dist = self.lb_dist
-                self.select_ulb_dist = torch.ones(self.num_classes).cuda(self.args.gpu)
-
-                # only for feature
-                self.current_idx = self.lb_idx
-                self.current_x = self.data[self.lb_idx]
-                self.current_y = self.targets[self.lb_idx]
-                self.current_noise_y = self.noised_targets[self.lb_idx]
-
-                self.adaptive_feature_dest = BasicDataset(self.current_idx, self.current_x, self.current_y, self.current_noise_y, self.args.num_classes, False, weak_transform=self.transform_weak, strong_transform=self.transform_strong, onehot=False)
-                self.adaptive_feature_loader = get_data_loader(self.args, self.adaptive_feature_dest, self.args.batch_size, data_sampler=None, num_workers=self.args.num_workers, drop_last=False)
-
-                # reset current labeled data
-                self.current_x = None
-                self.current_y = None
-                self.current_idx = None
-                self.current_noise_y = None
-
-                # get the class feature center
-                feature_mean_center = torch.zeros(self.num_classes, self.cfcd).cuda(self.args.gpu)
-                with torch.no_grad():
-                    for data in self.adaptive_feature_loader:
-                        if self.args.noise_ratio > 0:
-                            y = data['y_lb_noised']
-                        else:
-                            y = data['y_lb']
-                        x = data['x_lb_w']
-
-                        if isinstance(x, dict):
-                            x = {k: v.cuda(self.gpu) for k, v in x.items()}
-                        else:
-                            x = x.cuda(self.gpu)
-                        y = y.cuda(self.gpu)
-
-                        features = self.model(x.detach())['feat']
-
-                        for feat, label in zip(features, y):
-                            feature_mean_center[label] = feature_mean_center[label] + feat
-
-                feature_mean_center = torch.div(feature_mean_center, self.lb_select_ulb_dist.unsqueeze(1))
-
-                self.optim_cfc = feature_mean_center
-
-                # generate the sample augment r
-                feat_aug_r = torch.zeros(self.num_classes).cuda(self.gpu)
-                sim_num = torch.zeros(self.num_classes).cuda(self.gpu)
-                with torch.no_grad():
-                    for data in self.adaptive_feature_loader:
-                        if self.args.noise_ratio > 0:
-                            y = data['y_lb_noised']
-                        else:
-                            y = data['y_lb']
-                        x = data['x_lb_w']
-
-                        if isinstance(x, dict):
-                            x = {k: v.cuda(self.gpu) for k, v in x.items()}
-                        else:
-                            x = x.cuda(self.gpu)
-                        y = y.cuda(self.gpu)
-
-                        features = self.model(x.detach())['feat']
-
-                        feature_uniform_center_similarity = (torch.sum(torch.mul(features / torch.norm(features, dim=1, keepdim=True), self.optim_cfc[y] / torch.norm(self.optim_cfc[y], dim=1, keepdim=True)), dim=1) + 1.0) / 2.0
-                        sim_num[y] += feature_uniform_center_similarity
-
-                self.sim_num = 1 / torch.div(sim_num, self.lb_select_ulb_dist)
-                self.feat_aug_r = self.sim_num / torch.sum(self.sim_num)
-
             # self.warm_up+1~ use labeled (include the pseudo labeled) data and continue select unlabeled data
             # update the labeled (include the pseudo labeled) dataset and labeled (include the pseudo labeled) data distribution and selected unlabeled data distribution
             else:
@@ -407,68 +327,6 @@ class Gen_CPG(ImbAlgorithmBase):
                     self.adaptive_lb_dest = BasicDataset(self.current_idx, self.current_x, self.current_one_hot_y, self.current_one_hot_noise_y, self.args.num_classes, False, weak_transform=self.transform_weak, strong_transform=self.transform_strong, onehot=False)
                     self.adaptive_lb_dest_loader = get_data_loader(self.args, self.adaptive_lb_dest, self.args.batch_size, data_sampler=self.args.train_sampler, num_iters=self.num_train_iter, num_epochs=self.epochs, num_workers=self.args.num_workers, distributed=self.distributed)
 
-                    # only for feature
-                    self.adaptive_feature_dest = BasicDataset(self.current_idx, self.current_x, self.current_y, self.current_noise_y, self.args.num_classes, False, weak_transform=self.transform_weak, strong_transform=self.transform_strong, onehot=False)
-                    self.adaptive_feature_loader = get_data_loader(self.args, self.adaptive_feature_dest, self.args.batch_size, data_sampler=None, num_workers=self.args.num_workers, drop_last=False)
-
-                    # reset current labeled (include pseudo labeled) data
-                    self.current_x = None
-                    self.current_y = None
-                    self.current_idx = None
-                    self.current_noise_y = None
-                    self.current_one_hot_y = None
-                    self.current_one_hot_noise_y = None
-
-                    # get the class feature center
-                    feature_mean_center = torch.zeros(self.num_classes, self.cfcd).cuda(self.args.gpu)
-                    with torch.no_grad():
-                        for data in self.adaptive_feature_loader:
-                            if self.args.noise_ratio > 0:
-                                y = data['y_lb_noised']
-                            else:
-                                y = data['y_lb']
-                            x = data['x_lb_w']
-
-                            if isinstance(x, dict):
-                                x = {k: v.cuda(self.gpu) for k, v in x.items()}
-                            else:
-                                x = x.cuda(self.gpu)
-                            y = y.cuda(self.gpu)
-
-                            features = self.model(x.detach())['feat']
-
-                            for feat, label in zip(features, y):
-                                feature_mean_center[label] = feature_mean_center[label] + feat
-
-                    feature_mean_center = torch.div(feature_mean_center, self.lb_select_ulb_dist.unsqueeze(1))
-
-                    self.optim_cfc = feature_mean_center
-
-                    # generate the sample augment r
-                    feat_aug_r = torch.zeros(self.num_classes).cuda(self.gpu)
-                    sim_num = torch.zeros(self.num_classes).cuda(self.gpu)
-                    with torch.no_grad():
-                        for data in self.adaptive_feature_loader:
-                            if self.args.noise_ratio > 0:
-                                y = data['y_lb_noised']
-                            else:
-                                y = data['y_lb']
-                            x = data['x_lb_w']
-
-                            if isinstance(x, dict):
-                                x = {k: v.cuda(self.gpu) for k, v in x.items()}
-                            else:
-                                x = x.cuda(self.gpu)
-                            y = y.cuda(self.gpu)
-
-                            features = self.model(x.detach())['feat']
-
-                            feature_uniform_center_similarity = (torch.sum(torch.mul(features / torch.norm(features, dim=1, keepdim=True), self.optim_cfc[y] / torch.norm(self.optim_cfc[y], dim=1, keepdim=True)), dim=1) + 1.0) / 2.0
-                            sim_num[y] += feature_uniform_center_similarity
-
-                    self.sim_num = 1 / torch.div(sim_num, self.lb_select_ulb_dist)
-                    self.feat_aug_r = self.sim_num / torch.sum(self.sim_num)
-
             # prevent the training iterations exceed args.num_train_iter
             if self.it >= self.num_train_iter:
                 break
@@ -548,33 +406,12 @@ class Gen_CPG(ImbAlgorithmBase):
 
                 mask = torch.tensor([False]).cuda(self.args.gpu)
             else:
-                # loss for labeled data = self.warm_up / for labeled and pseudo labeled data > self.warm_up
-                # augment labeled data
-                if self.epoch < self.warm_up + self.memory_step:
-                    aug_feats_x_lb_times = (torch.ones_like(lb) * 10.0).int()
-                    lb_smooth = torch.zeros(num_lb, self.num_classes).cuda(self.args.gpu)
-                    lb_smooth.fill_(self.args.smoothing / (self.num_classes - 1))
-                    lb_smooth.scatter_(1, lb.unsqueeze(1), 1.0 - self.args.smoothing)
-                    lb = lb_smooth
-                else:
-                    aug_feats_x_lb_times = (10.0 * torch.sort(self.lb_select_ulb_dist).values[self.num_classes // 3] / self.lb_select_ulb_dist).int()[torch.argmax(lb, dim=1)]
-
-                aug_lbs_x_lb = lb
-                aug_feats_x_lb = feats_x_lb_w
-
-                for feat, label, aug_time in zip(feats_x_lb_w[aug_feats_x_lb_times != 0], lb[aug_feats_x_lb_times != 0], aug_feats_x_lb_times[aug_feats_x_lb_times != 0]):
-                    repeated_feat = torch.cat([feat.unsqueeze(0) for _ in range(aug_time)], dim=0)
-                    repeated_label = torch.cat([label.unsqueeze(0) for _ in range(aug_time)], dim=0)
-                    repeated_feat_aug_r = (torch.cat([self.feat_aug_r[torch.argmax(label).item()].unsqueeze(0) for _ in range(aug_time)], dim=0)).view(-1, 1)
-                    repeated_feat_norm = torch.cat([F.normalize(feat.unsqueeze(0)) for _ in range(aug_time)], dim=0)
-
-                    aug_lbs_x_lb = torch.cat([aug_lbs_x_lb, repeated_label], dim=0)
-                    aug_feats_x_lb = torch.cat([aug_feats_x_lb, repeated_feat + torch.randn(aug_time, self.fd).cuda(self.gpu) * repeated_feat_aug_r * repeated_feat_norm], dim=0)
-
-                aug_logits_x_lb = self.model.classifier(aug_feats_x_lb)
-
+                lb_smooth = torch.zeros(num_lb, self.num_classes).cuda(self.args.gpu)
+                lb_smooth.fill_(self.args.smoothing / (self.num_classes - 1))
+                lb_smooth.scatter_(1, lb.unsqueeze(1), 1.0 - self.args.smoothing)
+                lb = lb_smooth
                 # compute cross entropy loss for labeled data
-                sup_loss = self.ce_loss(aug_logits_x_lb + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), aug_lbs_x_lb, reduction='mean')
+                sup_loss = self.ce_loss(logits_x_lb_w + torch.log(self.lb_select_ulb_dist / torch.sum(self.lb_select_ulb_dist)), lb, reduction='mean')
 
                 # compute probability
                 before_refined_select_ulb_dist = torch.where(self.select_ulb_dist <= min(self.lb_dist), 0, self.select_ulb_dist)
