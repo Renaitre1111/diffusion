@@ -494,21 +494,37 @@ class Gen_CPG(ImbAlgorithmBase):
 
                 mask = torch.tensor([False]).cuda(self.args.gpu)
             else:
-                lb_smooth = torch.zeros(num_lb, self.num_classes).cuda(self.args.gpu)
-                lb_smooth.fill_(self.args.smoothing / (self.num_classes - 1))
-                lb_smooth.scatter_(1, lb.unsqueeze(1), 1.0 - self.args.smoothing)
-                lb = lb_smooth
+                if self.epoch < self.warm_up + self.memory_step:
+                    lb_smooth = torch.zeros(num_lb, self.num_classes).cuda(self.args.gpu)
+                    lb_smooth.fill_(self.args.smoothing / (self.num_classes - 1))
+                    lb_smooth.scatter_(1, lb.unsqueeze(1), 1.0 - self.args.smoothing)
+                    lb_for_sup = lb_smooth
+
+                else:
+                    lb_for_sup = lb
+                    lb_for_aux = lb.argmax(dim=1)
                 # compute cross entropy loss for labeled data
-                sup_loss = self.ce_loss(logits_x_lb_w, lb, reduction='mean')
+                sup_loss = self.ce_loss(logits_x_lb_w, lb_for_sup, reduction='mean')
+
+                before_refined_select_ulb_dist = torch.where(self.select_ulb_dist <= min(self.lb_dist), 0, self.select_ulb_dist)
+
+                sorted_select_ulb_dist, _ = torch.sort(torch.unique(before_refined_select_ulb_dist))
+
+                if len(sorted_select_ulb_dist) == 1:
+                    refined_select_ulb_dist = torch.ones_like(before_refined_select_ulb_dist)
+                else:
+                    refined_select_ulb_dist = torch.where(before_refined_select_ulb_dist == 0, sorted_select_ulb_dist[1], before_refined_select_ulb_dist)
+
+                logit_adj_ulb = torch.log(refined_select_ulb_dist / torch.sum(refined_select_ulb_dist))
 
                 with torch.no_grad():
                     energy_w = -torch.logsumexp(logits_x_ulb_w.detach(), dim=1)
                     s_energy_quality = torch.sigmoid(-energy_w - self.args.energy_cutoff)
 
-                    probs_x_ulb_w = self.compute_prob((logits_x_ulb_w))
+                    probs_x_ulb_w = self.compute_prob((logits_x_ulb_w + logit_adj_ulb))
                     pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_w, use_hard_label=True, T=self.T, softmax=False)
                     
-                    probs_x_ulb_s = self.compute_prob((logits_x_ulb_s))
+                    probs_x_ulb_s = self.compute_prob((logits_x_ulb_s + logit_adj_ulb))
                     pseudo_label_s = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_s, use_hard_label=True, T=self.T, softmax=False)
                 
                     mask_high_conf = probs_x_ulb_w.amax(dim=-1).ge(self.p_cutoff * (1.0 - self.args.smoothing))
@@ -523,7 +539,7 @@ class Gen_CPG(ImbAlgorithmBase):
                     w_i[mask_band2] = 0.1 + 0.3 * s_energy_quality[mask_band2]
                 
                 aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
-                aux_loss_lb = self.ce_loss(aux_logits_x_lb_w, lb.argmax(dim=1), reduction='mean')
+                aux_loss_lb = self.ce_loss(aux_logits_x_lb_w, lb_for_aux, reduction='mean')
 
                 unweighted_aux_loss_ulb = self.ce_loss(aux_logits_x_ulb_s, aux_pseudo_label_w, reduction='none')
                 weighted_aux_loss_ulb = (unweighted_aux_loss_ulb * w_i).mean()
