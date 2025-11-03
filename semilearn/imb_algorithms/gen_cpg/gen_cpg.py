@@ -179,6 +179,9 @@ class Gen_CPG(ImbAlgorithmBase):
 
         self.lb_select_ulb_dist = self.lb_dist + self.select_ulb_dist
 
+        if self.args.candidate_pool_dir is not None:
+            self._load_candidate_pool(self.args.candidate_pool_dir)
+
     def _load_generated_data(self, data_dir):
         class_to_idx = np.load(os.path.join(data_dir, 'class_to_idx.npy'), allow_pickle=True).item()
         generated_dir = os.path.join(data_dir, self.args.dataset)
@@ -481,5 +484,6 @@ class Gen_CPG(ImbAlgorithmBase):
             SSL_Argument('--alpha', float, 1.0),
             SSL_Argument('--smoothing', float, 0.1),
             SSL_Argument('--generated_data_dir', str, './data/generated'),
+            SSL_Argument('--candidate_pool_dir', str, './data/generated'),
             SSL_Argument('--energy_cutoff', float, -5.0)
         ]
