@@ -246,7 +246,7 @@ class Gen_CPG(ImbAlgorithmBase):
             # self.warm_up+1~ use labeled (include the pseudo labeled) data and continue select unlabeled data
             # update the labeled (include the pseudo labeled) dataset and labeled (include the pseudo labeled) data distribution and selected unlabeled data distribution
             else:
-                if self.epoch % self.memory_step == 0:
+                if self.epoch % self.memory_step == 0 and self.select_ulb_idx is not None:
                     self.current_x = None
                     self.current_y = None
                     self.current_idx = None
