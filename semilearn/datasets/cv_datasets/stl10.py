@@ -7,6 +7,7 @@ import torchvision
 import numpy as np
 import math 
 from torchvision import transforms
+import random
 
 from .datasetbase import BasicDataset
 from semilearn.datasets.utils import split_labeled_unlabeled_data
