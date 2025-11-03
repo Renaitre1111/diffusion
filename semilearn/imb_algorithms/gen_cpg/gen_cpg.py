@@ -6,7 +6,7 @@ import torch
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-from collections import Counter
+from collections import Counter, defaultdict
 import torch.nn.functional as F
 from torchvision import transforms
 from semilearn.core import ImbAlgorithmBase
@@ -56,6 +56,9 @@ class Gen_CPG(ImbAlgorithmBase):
 
         self.adaptive_lb_dest = None
         self.adaptive_lb_dest_loader = None
+
+        self.candidate_data = defaultdict(list)
+        self.candidate_targets = defaultdict(list)
 
         self.dataset = args.dataset
         self.data = self.dataset_dict['data']
@@ -114,11 +117,11 @@ class Gen_CPG(ImbAlgorithmBase):
                                 ])
 
         if self.args.generated_data_dir is not None:
-            gen_data, gen_targets, gen_noised_targets, gen_idx = self._load_generated_data(self.args.generated_data_dir)
+            gen_data, gen_targets, gen_noised_targets, self.gen_idx = self._load_generated_data(self.args.generated_data_dir)
             self.data = np.concatenate((self.data, gen_data), axis=0)
             self.targets = np.concatenate((self.targets, gen_targets), axis=0)
             self.noised_targets = np.concatenate((self.noised_targets, gen_noised_targets), axis=0)
-            self.lb_idx = np.concatenate((self.lb_idx, gen_idx), axis=0)
+            self.lb_idx = np.concatenate((self.lb_idx, self.gen_idx), axis=0)
 
             new_lb_data = self.data[self.lb_idx]
             new_lb_targets = self.targets[self.lb_idx]
@@ -203,6 +206,22 @@ class Gen_CPG(ImbAlgorithmBase):
         gen_idx = np.arange(max_existing_idx + 1, max_existing_idx + 1 + len(gen_data))
 
         return gen_data, gen_targets, gen_noise_targets, gen_idx
+    
+    def _load_candidate_pool(self, data_dir):
+        class_to_idx = np.load(os.path.join(data_dir, 'class_to_idx.npy'), allow_pickle=True).item()
+        candidate_pool_dir = os.path.join(data_dir, self.args.dataset, '_pool')
+
+        crop_size = self.args.img_size
+        crop_ratio = self.args.crop_ratio
+
+        for class_name in os.listdir(candidate_pool_dir):
+            class_dir = os.path.join(candidate_pool_dir, class_name)
+            class_idx = class_to_idx[class_name]
+
+            for img_name in os.listdir(class_dir):
+                img_path = os.path.join(class_dir, img_name)
+                self.candidate_data[class_idx].append(np.array(Image.open(img_path).convert('RGB').resize((int(math.floor(crop_size / crop_ratio)), int(math.floor(crop_size / crop_ratio))))))
+                self.candidate_targets[class_idx].append(class_idx)
 
     def train(self):
         """
