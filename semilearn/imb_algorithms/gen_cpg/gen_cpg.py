@@ -499,6 +499,7 @@ class Gen_CPG(ImbAlgorithmBase):
                     lb_smooth.fill_(self.args.smoothing / (self.num_classes - 1))
                     lb_smooth.scatter_(1, lb.unsqueeze(1), 1.0 - self.args.smoothing)
                     lb_for_sup = lb_smooth
+                    lb_for_aux = y_lb
 
                 else:
                     lb_for_sup = lb
