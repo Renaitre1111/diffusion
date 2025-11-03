@@ -212,7 +212,8 @@ class Gen_CPG(ImbAlgorithmBase):
     
     def _load_candidate_pool(self, data_dir):
         class_to_idx = np.load(os.path.join(data_dir, 'class_to_idx.npy'), allow_pickle=True).item()
-        candidate_pool_dir = os.path.join(data_dir, self.args.dataset, '_pool')
+        if self.dataset == 'food101':
+            candidate_pool_dir = os.path.join(data_dir, 'food101_pool')
 
         crop_size = self.args.img_size
         crop_ratio = self.args.crop_ratio
@@ -325,6 +326,40 @@ class Gen_CPG(ImbAlgorithmBase):
                     self.print_fn('select_ulb_dist:\n' + np.array_str(np.array(self.select_ulb_dist.cpu())))
                     self.print_fn('lb_select_ulb_dist:\n' + np.array_str(np.array(self.lb_select_ulb_dist.cpu())))
 
+                    new_gen_data = []
+                    new_gen_targets = []
+
+                    target_num = torch.max(self.lb_select_ulb_dist)
+
+                    num_to_add_per_class = torch.relu(target_num - self.lb_select_ulb_dist).int().cpu().numpy()
+                    total_sampled = 0
+                    for i in range(self.num_classes):
+                        num_to_sample = num_to_add_per_class[i]
+                        if num_to_sample == 0 or len(self.candidate_data[i]) == 0:
+                            continue
+                        sampled_idx = np.random.choice(self.candidate_data[i], num_to_sample, replace=True)
+                        new_gen_data.append(self.candidate_data[i][j] for j in sampled_idx)
+                        new_gen_targets.append(self.candidate_targets[i][j] for j in sampled_idx)
+                        total_sampled += num_to_sample
+                    if total_sampled > 0:
+                        new_gen_data = np.array(new_gen_data)
+                        new_gen_targets = np.array(new_gen_targets)
+                        num_new_gen = len(new_gen_targets)
+                        self.print_fn(f'sampled {num_new_gen} images from pool.')
+
+                        gen_one_hot_y = np.full((num_new_gen, self.num_classes), self.args.smoothing / (self.num_classes - 1))
+                        gen_one_hot_y[np.arange(num_new_gen), new_gen_targets] = 1.0 - self.args.smoothing
+
+                        start_idx = len(self.data) + len(self.select_ulb_idx) + 1
+                        new_gen_idx = np.arange(start_idx, start_idx + num_new_gen)
+                    else:
+                        self.print_fn('no new data sampled from pool in this step.')
+                        new_gen_data = np.array([])
+                        new_gen_targets = np.array([])
+                        new_gen_idx = np.array([])
+                        gen_one_hot_y = np.array([]).reshape(0, self.num_classes)
+
+                    '''
                     # update the current labeled and pseudo labeled data
                     self.current_idx = np.concatenate((self.lb_idx, self.select_ulb_idx), axis=0)
                     self.current_x = self.data[self.current_idx]
@@ -336,18 +371,49 @@ class Gen_CPG(ImbAlgorithmBase):
                     current_one_hot_noise_y[np.arange(len(self.noised_targets[self.lb_idx])), self.noised_targets[self.lb_idx]] = 1.0 - self.args.smoothing
                     self.current_one_hot_y = np.concatenate((current_one_hot_y, self.select_ulb_pseudo_label_distribution), axis=0)
                     self.current_one_hot_noise_y = np.concatenate((current_one_hot_noise_y, self.select_ulb_pseudo_label_distribution), axis=0)
+                    '''
+                    base_lb_idx = self.lb_idx
+                    base_ulb_idx = self.select_ulb_idx.cpu().numpy()
+
+                    self.current_idx = np.concatenate((base_lb_idx, base_ulb_idx, new_gen_idx), axis=0)
+
+                    base_x = self.data[np.concatenate((base_lb_idx, base_ulb_idx))]
+
+                    if len(new_gen_data) > 0:
+                        self.current_x = np.concatenate((base_x, new_gen_data), axis=0)
+                    else:
+                        self.current_x = base_x
+                    
+                    self.current_y = np.concatenate((self.targets[base_lb_idx], self.select_ulb_pseudo_label.cpu().numpy(), new_gen_targets), axis=0)
+                    self.current_noise_y = np.concatenate((self.noised_targets[base_lb_idx], self.select_ulb_pseudo_label.cpu().numpy(), new_gen_targets), axis=0)
+                    
+                    current_one_hot_y = np.full((len(base_lb_idx), self.num_classes), self.args.smoothing / (self.num_classes - 1))
+                    current_one_hot_y[np.arange(len(base_lb_idx)), self.targets[base_lb_idx]] = 1.0 - self.args.smoothing
+
+                    current_one_hot_noise_y = np.full((len(base_lb_idx), self.num_classes), self.args.smoothing / (self.num_classes - 1))
+                    current_one_hot_noise_y[np.arange(len(base_lb_idx)), self.noised_targets[base_lb_idx]] = 1.0 - self.args.smoothing
+                    
+                    pseudo_label_dist = self.select_ulb_pseudo_label_distribution.cpu().numpy()
+                    self.current_one_hot_y = np.concatenate((current_one_hot_y, pseudo_label_dist, gen_one_hot_y), axis=0)
+                    self.current_one_hot_noise_y = np.concatenate((current_one_hot_noise_y, pseudo_label_dist, gen_one_hot_y), axis=0)
+
+                    self.print_fn(str(self.epoch) + ': Update the labeled data.')
+                    # construct the current lb_select_ulb data and its dataloader
+                    self.adaptive_lb_dest = BasicDataset(self.current_idx, self.current_x, self.current_one_hot_y, self.current_one_hot_noise_y, self.args.num_classes, False, weak_transform=self.transform_weak, strong_transform=self.transform_strong, onehot=False)
+                    self.adaptive_lb_dest_loader = get_data_loader(self.args, self.adaptive_lb_dest, self.args.batch_size, data_sampler=self.args.train_sampler, num_iters=self.num_train_iter, num_epochs=self.epochs, num_workers=self.args.num_workers, distributed=self.distributed)
+
+                    self.current_x = None
+                    self.current_y = None
+                    self.current_idx = None
+                    self.current_noise_y = None
+                    self.current_one_hot_y = None
+                    self.current_one_hot_noise_y = None
 
                     # reset select ulb idx and its pseudo label
                     self.select_ulb_idx = None
                     self.select_ulb_label = None
                     self.select_ulb_pseudo_label = None
                     self.select_ulb_pseudo_label_distribution = None
-
-                if (self.epoch - self.warm_up - self.memory_step) % self.update_step == 0:
-                    self.print_fn(str(self.epoch) + ': Update the labeled data.')
-                    # construct the current lb_select_ulb data and its dataloader
-                    self.adaptive_lb_dest = BasicDataset(self.current_idx, self.current_x, self.current_one_hot_y, self.current_one_hot_noise_y, self.args.num_classes, False, weak_transform=self.transform_weak, strong_transform=self.transform_strong, onehot=False)
-                    self.adaptive_lb_dest_loader = get_data_loader(self.args, self.adaptive_lb_dest, self.args.batch_size, data_sampler=self.args.train_sampler, num_iters=self.num_train_iter, num_epochs=self.epochs, num_workers=self.args.num_workers, distributed=self.distributed)
 
             # prevent the training iterations exceed args.num_train_iter
             if self.it >= self.num_train_iter:
