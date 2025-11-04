@@ -14,7 +14,7 @@ Also, I've made corresponding modifications to `semilearn/nets/` and several `__
 For example, on CIFAR-10-LT with long-tailed labeled data ($\gamma_l=100$) and arbitrary unlabeled data($\gamma_u=100$)
 
 ```
-CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/cpg/203-fixmatch_cpg_cifar10_lb400_100_ulb4600_100_random_0.0_1.yaml"
+CUDA_VISIBLE_DEVICES=3 python train.py --c "config/config-1/cpg/203-fixmatch_cpg_cifar10_lb400_100_ulb4600_100_random_0.0_1.yaml"
 ```
 
 ```

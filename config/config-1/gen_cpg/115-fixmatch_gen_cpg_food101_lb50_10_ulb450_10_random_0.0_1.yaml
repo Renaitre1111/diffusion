@@ -1,8 +1,8 @@
 algorithm: fixmatch
 save_dir: ./saved_models/gen_cpg
 save_name: 115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1
-resume: True
-load_path: ./saved_models/gen_cpg/warm_up/model_best.pth
+resume: False
+load_path: None
 overwrite: True
 use_tensorboard: True
 epoch: 80
@@ -23,7 +23,7 @@ batch_size: 64
 eval_batch_size: 512
 hard_label: True
 T: 0.5
-p_cutoff: 0.90
+p_cutoff: 0.95
 ulb_loss_ratio: 1.0
 uratio: 7
 ema_m: 0.999
