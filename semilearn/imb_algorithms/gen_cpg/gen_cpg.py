@@ -521,7 +521,7 @@ class Gen_CPG(ImbAlgorithmBase):
                     mask_consistent = (pseudo_label_w == pseudo_label_s)
 
                     mask_band1 = mask_high_conf & mask_consistent
-                    mask_band2 = mask_high_conf & ~mask_consistent
+                    mask_band2 = (mask_high_conf & ~mask_consistent) | (~mask_high_conf & mask_consistent)
 
                     w_i = torch.zeros_like(probs_x_ulb_w.amax(dim=-1))
 

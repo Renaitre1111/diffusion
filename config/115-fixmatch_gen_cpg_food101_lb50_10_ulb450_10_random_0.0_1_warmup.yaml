@@ -5,8 +5,8 @@ resume: True
 load_path: ./saved_models/gen_cpg/warm_up/model_best.pth
 overwrite: True
 use_tensorboard: True
-epoch: 256
-num_train_iter: 262144
+epoch: 80
+num_train_iter: 81920
 num_eval_iter: 1024
 num_log_iter: 256
 num_labels: 50

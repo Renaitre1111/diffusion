@@ -5334,3 +5334,864 @@
 [2025-11-03 18:33:52,118 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
 [2025-11-03 18:33:52,178 INFO] Model result - eval/best_acc : 0.32043564356435644
 [2025-11-03 18:33:52,178 INFO] Model result - eval/best_it : 46079
+[2025-11-03 20:58:07,990 INFO] Use GPU: 0 for training
+[2025-11-03 21:00:01,256 INFO] Use GPU: 0 for training
+[2025-11-03 21:04:13,506 INFO] unlabeled data number: 17789, labeled data number 1931
+[2025-11-03 21:04:13,506 INFO] Create train and test data loaders
+[2025-11-03 21:04:13,507 INFO] [!] data loader keys: dict_keys(['train_lb', 'train_ulb', 'eval'])
+[2025-11-03 21:04:13,552 INFO] Create optimizer and scheduler
+[2025-11-03 21:07:14,562 INFO] Number of Trainable Params: 1492910
+[2025-11-03 21:07:14,574 INFO] Arguments: Namespace(T=0.5, algorithm='fixmatch', alpha=1.0, amp=True, batch_size=64, c='config/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1_warmup.yaml', candidate_pool_dir='./data/generated', clip_grad=0.0, crop_ratio=0.875, data_dir='./data', dataset='food101', dist_backend='nccl', dist_url='tcp://127.0.0.1:21003', distributed=False, ema_m=0.999, energy_cutoff=-5.0, epoch=256, eval_batch_size=512, generated_data_dir='./data/generated', gpu=0, hard_label=True, imb_algorithm='gen_cpg', img_size=32, include_lb_to_ulb=False, layer_decay=1.0, lb_dest_len=1931, lb_imb_ratio=10, lb_imb_type='exp', load_path='./saved_models/gen_cpg/warm_up/model_best.pth', lr=0.03, momentum=0.9, multiprocessing_distributed=False, net='bi_rot_wrn_28_2', net_from_name=False, noise_per_class=False, noise_ratio=0.0, noise_type='asym', num_classes=101, num_eval_iter=1024, num_labels=50, num_log_iter=256, num_steps=5, num_train_iter=262144, num_warmup_iter=0, num_workers=20, optim='SGD', overwrite=True, p_cutoff=0.9, pretrain_path='', rank=0, resume=True, save_dir='./saved_models/gen_cpg', save_name='115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1', seed=1, smoothing=0.1, train_sampler='RandomSampler', ulb_dest_len=17789, ulb_imb_ratio=10, ulb_imb_type='exp_random', ulb_loss_ratio=1.0, ulb_num_labels=450, uratio=7, use_cat=True, use_pretrain=False, use_tensorboard=True, warm_up=30, weight_decay=0.0005, world_size=1)
+[2025-11-03 21:07:14,605 INFO] Model loaded
+[2025-11-03 21:07:14,605 INFO] Model training
+[2025-11-03 21:07:42,690 INFO] 29952 iteration USE_EMA: True, train/sup_loss: 0.9554, train/aux_loss: 3.2578, train/total_loss: 4.2132, train/util_ratio: 0.0000, train/run_time: 0.0773, lr: 0.0296, train/prefecth_time: 0.0179 
+[2025-11-03 21:08:09,120 INFO] 30208 iteration USE_EMA: True, train/sup_loss: 0.9051, train/aux_loss: 3.3104, train/total_loss: 4.2155, train/util_ratio: 0.0000, train/run_time: 0.0734, lr: 0.0296, train/prefecth_time: 0.0122 
+[2025-11-03 21:08:35,317 INFO] 30464 iteration USE_EMA: True, train/sup_loss: 0.8874, train/aux_loss: 3.0835, train/total_loss: 3.9709, train/util_ratio: 0.0000, train/run_time: 0.0754, lr: 0.0296, train/prefecth_time: 0.0122 
+[2025-11-03 21:09:01,572 INFO] validating...
+[2025-11-03 21:09:05,105 INFO] confusion matrix:
+[[0.192 0.    0.056 ... 0.008 0.    0.016]
+ [0.008 0.572 0.008 ... 0.    0.    0.   ]
+ [0.124 0.008 0.328 ... 0.    0.    0.004]
+ ...
+ [0.072 0.032 0.012 ... 0.144 0.    0.02 ]
+ [0.008 0.008 0.    ... 0.    0.028 0.   ]
+ [0.068 0.024 0.012 ... 0.    0.004 0.1  ]]
+[2025-11-03 21:09:05,206 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:09:05,262 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:09:05,263 INFO] 30720 iteration, USE_EMA: True, train/sup_loss: 0.8742, train/aux_loss: 3.0444, train/total_loss: 3.9186, train/util_ratio: 0.0000, train/run_time: 0.0756, eval/loss: 3.3730, eval/top-1-acc: 0.2874, eval/top-5-acc: 0.5288, eval/balanced_acc: 0.2874, eval/precision: 0.3063, eval/recall: 0.2874, eval/F1: 0.2813, lr: 0.0296, train/prefecth_time: 0.0145 BEST_EVAL_ACC: 0.2874, at 30720 iters
+[2025-11-03 21:09:34,433 INFO] 30976 iteration USE_EMA: True, train/sup_loss: 1.7609, train/aux_loss: 1.1036, train/total_loss: 2.8646, train/util_ratio: 0.0402, train/run_time: 0.0745, lr: 0.0296, train/prefecth_time: 0.0134 
+[2025-11-03 21:10:00,289 INFO] 31232 iteration USE_EMA: True, train/sup_loss: 1.2700, train/aux_loss: 0.5440, train/total_loss: 1.8140, train/util_ratio: 0.0759, train/run_time: 0.0762, lr: 0.0296, train/prefecth_time: 0.0086 
+[2025-11-03 21:10:26,437 INFO] 31488 iteration USE_EMA: True, train/sup_loss: 0.8878, train/aux_loss: 0.0715, train/total_loss: 0.9593, train/util_ratio: 0.0871, train/run_time: 0.0786, lr: 0.0296, train/prefecth_time: 0.0135 
+[2025-11-03 21:10:52,700 INFO] validating...
+[2025-11-03 21:10:55,093 INFO] confusion matrix:
+[[0.24  0.004 0.052 ... 0.004 0.    0.008]
+ [0.008 0.496 0.004 ... 0.004 0.    0.   ]
+ [0.152 0.    0.328 ... 0.    0.    0.   ]
+ ...
+ [0.048 0.04  0.008 ... 0.168 0.    0.012]
+ [0.012 0.004 0.    ... 0.    0.032 0.   ]
+ [0.06  0.02  0.004 ... 0.    0.    0.076]]
+[2025-11-03 21:10:55,210 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:10:55,211 INFO] 31744 iteration, USE_EMA: True, train/sup_loss: 0.8294, train/aux_loss: 0.0598, train/total_loss: 0.8892, train/util_ratio: 0.0759, train/run_time: 0.0752, eval/loss: 3.3306, eval/top-1-acc: 0.2810, eval/top-5-acc: 0.5278, eval/balanced_acc: 0.2810, eval/precision: 0.3038, eval/recall: 0.2810, eval/F1: 0.2743, lr: 0.0296, train/prefecth_time: 0.0131 BEST_EVAL_ACC: 0.2874, at 30720 iters
+[2025-11-03 21:11:25,187 INFO] 32000 iteration USE_EMA: True, train/sup_loss: 0.8285, train/aux_loss: 0.0282, train/total_loss: 0.8566, train/util_ratio: 0.0580, train/run_time: 0.0757, lr: 0.0296, train/prefecth_time: 0.0185 
+[2025-11-03 21:11:51,276 INFO] 32256 iteration USE_EMA: True, train/sup_loss: 0.8249, train/aux_loss: 0.0216, train/total_loss: 0.8465, train/util_ratio: 0.0558, train/run_time: 0.0745, lr: 0.0296, train/prefecth_time: 0.0127 
+[2025-11-03 21:12:17,470 INFO] 32512 iteration USE_EMA: True, train/sup_loss: 0.8125, train/aux_loss: 0.0330, train/total_loss: 0.8455, train/util_ratio: 0.0848, train/run_time: 0.0753, lr: 0.0296, train/prefecth_time: 0.0090 
+[2025-11-03 21:12:43,416 INFO] validating...
+[2025-11-03 21:12:45,965 INFO] confusion matrix:
+[[0.224 0.004 0.032 ... 0.004 0.    0.012]
+ [0.008 0.488 0.    ... 0.004 0.    0.004]
+ [0.128 0.    0.316 ... 0.    0.    0.   ]
+ ...
+ [0.04  0.032 0.008 ... 0.16  0.    0.016]
+ [0.012 0.012 0.    ... 0.    0.036 0.   ]
+ [0.06  0.02  0.004 ... 0.    0.    0.1  ]]
+[2025-11-03 21:12:46,076 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:12:46,077 INFO] 32768 iteration, USE_EMA: True, train/sup_loss: 0.8149, train/aux_loss: 0.0437, train/total_loss: 0.8586, train/util_ratio: 0.0670, train/run_time: 0.0743, eval/loss: 3.2999, eval/top-1-acc: 0.2798, eval/top-5-acc: 0.5202, eval/balanced_acc: 0.2798, eval/precision: 0.2963, eval/recall: 0.2798, eval/F1: 0.2723, lr: 0.0296, train/prefecth_time: 0.0089 BEST_EVAL_ACC: 0.2874, at 30720 iters
+[2025-11-03 21:13:16,194 INFO] 33024 iteration USE_EMA: True, train/sup_loss: 0.8147, train/aux_loss: 0.0254, train/total_loss: 0.8401, train/util_ratio: 0.0469, train/run_time: 0.0752, lr: 0.0296, train/prefecth_time: 0.0147 
+[2025-11-03 21:13:42,260 INFO] 33280 iteration USE_EMA: True, train/sup_loss: 0.8120, train/aux_loss: 0.0191, train/total_loss: 0.8311, train/util_ratio: 0.0781, train/run_time: 0.0752, lr: 0.0295, train/prefecth_time: 0.0137 
+[2025-11-03 21:14:08,386 INFO] 33536 iteration USE_EMA: True, train/sup_loss: 0.8102, train/aux_loss: 0.0256, train/total_loss: 0.8358, train/util_ratio: 0.0647, train/run_time: 0.0757, lr: 0.0295, train/prefecth_time: 0.0150 
+[2025-11-03 21:14:34,369 INFO] validating...
+[2025-11-03 21:14:37,958 INFO] confusion matrix:
+[[0.216 0.004 0.036 ... 0.004 0.    0.008]
+ [0.008 0.488 0.    ... 0.004 0.    0.004]
+ [0.132 0.    0.316 ... 0.    0.    0.   ]
+ ...
+ [0.048 0.04  0.02  ... 0.148 0.    0.008]
+ [0.008 0.012 0.    ... 0.    0.024 0.   ]
+ [0.068 0.024 0.004 ... 0.    0.    0.08 ]]
+[2025-11-03 21:14:38,053 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:14:38,054 INFO] 33792 iteration, USE_EMA: True, train/sup_loss: 0.8144, train/aux_loss: 0.0407, train/total_loss: 0.8551, train/util_ratio: 0.0871, train/run_time: 0.0754, eval/loss: 3.3155, eval/top-1-acc: 0.2784, eval/top-5-acc: 0.5180, eval/balanced_acc: 0.2784, eval/precision: 0.2967, eval/recall: 0.2784, eval/F1: 0.2700, lr: 0.0295, train/prefecth_time: 0.0127 BEST_EVAL_ACC: 0.2874, at 30720 iters
+[2025-11-03 21:15:07,276 INFO] 34048 iteration USE_EMA: True, train/sup_loss: 0.8135, train/aux_loss: 0.0378, train/total_loss: 0.8513, train/util_ratio: 0.0960, train/run_time: 0.0747, lr: 0.0295, train/prefecth_time: 0.0145 
+[2025-11-03 21:15:33,471 INFO] 34304 iteration USE_EMA: True, train/sup_loss: 0.8151, train/aux_loss: 0.0149, train/total_loss: 0.8301, train/util_ratio: 0.0446, train/run_time: 0.0761, lr: 0.0295, train/prefecth_time: 0.0182 
+[2025-11-03 21:15:59,561 INFO] 34560 iteration USE_EMA: True, train/sup_loss: 0.8201, train/aux_loss: 0.0308, train/total_loss: 0.8509, train/util_ratio: 0.0804, train/run_time: 0.0757, lr: 0.0295, train/prefecth_time: 0.0156 
+[2025-11-03 21:16:25,715 INFO] validating...
+[2025-11-03 21:16:28,172 INFO] confusion matrix:
+[[0.212 0.004 0.036 ... 0.004 0.    0.004]
+ [0.008 0.528 0.    ... 0.    0.    0.004]
+ [0.14  0.    0.316 ... 0.    0.    0.   ]
+ ...
+ [0.048 0.04  0.02  ... 0.148 0.    0.008]
+ [0.008 0.012 0.    ... 0.    0.024 0.   ]
+ [0.064 0.016 0.004 ... 0.    0.    0.06 ]]
+[2025-11-03 21:16:28,286 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:16:28,287 INFO] 34816 iteration, USE_EMA: True, train/sup_loss: 2.7453, train/aux_loss: 2.3509, train/total_loss: 5.0962, train/util_ratio: 0.0290, train/run_time: 0.0753, eval/loss: 3.2965, eval/top-1-acc: 0.2761, eval/top-5-acc: 0.5194, eval/balanced_acc: 0.2761, eval/precision: 0.3025, eval/recall: 0.2761, eval/F1: 0.2685, lr: 0.0295, train/prefecth_time: 0.0115 BEST_EVAL_ACC: 0.2874, at 30720 iters
+[2025-11-03 21:16:57,856 INFO] 35072 iteration USE_EMA: True, train/sup_loss: 1.5260, train/aux_loss: 0.7985, train/total_loss: 2.3245, train/util_ratio: 0.0491, train/run_time: 0.0765, lr: 0.0295, train/prefecth_time: 0.0147 
+[2025-11-03 21:17:24,013 INFO] 35328 iteration USE_EMA: True, train/sup_loss: 1.1165, train/aux_loss: 0.3154, train/total_loss: 1.4319, train/util_ratio: 0.0513, train/run_time: 0.0757, lr: 0.0295, train/prefecth_time: 0.0160 
+[2025-11-03 21:17:50,160 INFO] 35584 iteration USE_EMA: True, train/sup_loss: 0.9304, train/aux_loss: 0.0824, train/total_loss: 1.0129, train/util_ratio: 0.0536, train/run_time: 0.0755, lr: 0.0295, train/prefecth_time: 0.0172 
+[2025-11-03 21:18:16,319 INFO] validating...
+[2025-11-03 21:18:19,121 INFO] confusion matrix:
+[[0.252 0.004 0.032 ... 0.004 0.    0.   ]
+ [0.012 0.5   0.004 ... 0.    0.    0.   ]
+ [0.136 0.004 0.332 ... 0.    0.    0.   ]
+ ...
+ [0.04  0.04  0.008 ... 0.152 0.    0.004]
+ [0.008 0.008 0.    ... 0.    0.028 0.   ]
+ [0.084 0.012 0.008 ... 0.    0.    0.032]]
+[2025-11-03 21:18:19,226 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:18:19,227 INFO] 35840 iteration, USE_EMA: True, train/sup_loss: 0.8625, train/aux_loss: 0.0474, train/total_loss: 0.9099, train/util_ratio: 0.0491, train/run_time: 0.0771, eval/loss: 3.2855, eval/top-1-acc: 0.2678, eval/top-5-acc: 0.5169, eval/balanced_acc: 0.2678, eval/precision: 0.2962, eval/recall: 0.2678, eval/F1: 0.2600, lr: 0.0295, train/prefecth_time: 0.0124 BEST_EVAL_ACC: 0.2874, at 30720 iters
+[2025-11-03 21:18:31,648 INFO] select_ulb_dist:
+[ 15. 103.   6.  48.  93.  93.  64. 133.  25.  11.  58.  98.  25.  61.
+  20.  34.   5.  36.  45.  24.  47.   9.   6.   8.  27.  81.   8.  13.
+  35.   9.  54.   7. 100.  70.  40.  39.  27.  24.  28.  20.  25.  16.
+  11.   7.  53.  39.   9.   9.  23.  12.  27.  29.   3.   5.  25.  10.
+   7.   5.  10.  28.  42.  28.  21.   9.  11.  33.  14.   8.   6.  52.
+  14.  18.   1.   2.  12.  12.  20.  12.   4.  32.   5.   5.   8.  12.
+  25.   5.  28.   3.  84.   9.  11.  15.   2.   7.   3.  30.   5.   6.
+   2.   2.  11.]
+[2025-11-03 21:18:31,649 INFO] lb_select_ulb_dist:
+[ 65. 153.  56.  98. 143. 143. 114. 183.  75.  61. 108. 148.  75. 111.
+  70.  84.  55.  86.  95.  74.  97.  59.  56.  58.  77. 131.  58.  63.
+  85.  59. 104.  57. 150. 120.  90.  89.  77.  74.  78.  70.  75.  66.
+  61.  57. 103.  89.  59.  59.  73.  62.  77.  79.  53.  55.  75.  60.
+  57.  55.  60.  78.  92.  78.  71.  59.  61.  83.  64.  58.  56. 102.
+  64.  68.  51.  52.  62.  62.  70.  62.  54.  82.  55.  55.  58.  62.
+  75.  55.  78.  53. 134.  59.  61.  65.  52.  57.  53.  80.  55.  56.
+  52.  52.  61.]
+[2025-11-03 21:18:31,694 INFO] sampled 10802 images from pool.
+[2025-11-03 21:18:31,752 INFO] 35: Update the labeled data.
+[2025-11-03 21:18:59,376 INFO] 36096 iteration USE_EMA: True, train/sup_loss: 1.9732, train/aux_loss: 1.5450, train/total_loss: 3.5182, train/util_ratio: 0.0603, train/run_time: 0.0753, lr: 0.0295, train/prefecth_time: 0.0136 
+[2025-11-03 21:19:25,419 INFO] 36352 iteration USE_EMA: True, train/sup_loss: 1.6129, train/aux_loss: 1.0771, train/total_loss: 2.6900, train/util_ratio: 0.0670, train/run_time: 0.0753, lr: 0.0295, train/prefecth_time: 0.0144 
+[2025-11-03 21:19:51,406 INFO] 36608 iteration USE_EMA: True, train/sup_loss: 1.6413, train/aux_loss: 1.2339, train/total_loss: 2.8752, train/util_ratio: 0.0982, train/run_time: 0.0749, lr: 0.0294, train/prefecth_time: 0.0103 
+[2025-11-03 21:20:17,183 INFO] validating...
+[2025-11-03 21:20:19,710 INFO] confusion matrix:
+[[0.244 0.004 0.06  ... 0.004 0.    0.   ]
+ [0.004 0.524 0.004 ... 0.    0.    0.   ]
+ [0.116 0.    0.384 ... 0.008 0.    0.   ]
+ ...
+ [0.048 0.04  0.04  ... 0.148 0.    0.008]
+ [0.    0.012 0.004 ... 0.    0.032 0.   ]
+ [0.072 0.016 0.004 ... 0.    0.    0.044]]
+[2025-11-03 21:20:19,805 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:20:19,806 INFO] 36864 iteration, USE_EMA: True, train/sup_loss: 1.5558, train/aux_loss: 1.0766, train/total_loss: 2.6324, train/util_ratio: 0.0625, train/run_time: 0.0760, eval/loss: 3.1748, eval/top-1-acc: 0.2808, eval/top-5-acc: 0.5441, eval/balanced_acc: 0.2808, eval/precision: 0.3279, eval/recall: 0.2808, eval/F1: 0.2730, lr: 0.0294, train/prefecth_time: 0.0134 BEST_EVAL_ACC: 0.2874, at 30720 iters
+[2025-11-03 21:20:49,013 INFO] 37120 iteration USE_EMA: True, train/sup_loss: 1.4996, train/aux_loss: 1.0072, train/total_loss: 2.5068, train/util_ratio: 0.0938, train/run_time: 0.0752, lr: 0.0294, train/prefecth_time: 0.0112 
+[2025-11-03 21:21:15,104 INFO] 37376 iteration USE_EMA: True, train/sup_loss: 1.3270, train/aux_loss: 0.7049, train/total_loss: 2.0319, train/util_ratio: 0.0982, train/run_time: 0.0734, lr: 0.0294, train/prefecth_time: 0.0145 
+[2025-11-03 21:21:41,184 INFO] 37632 iteration USE_EMA: True, train/sup_loss: 1.3723, train/aux_loss: 0.8292, train/total_loss: 2.2016, train/util_ratio: 0.1116, train/run_time: 0.0746, lr: 0.0294, train/prefecth_time: 0.0143 
+[2025-11-03 21:22:07,167 INFO] validating...
+[2025-11-03 21:22:09,839 INFO] confusion matrix:
+[[0.268 0.004 0.072 ... 0.    0.    0.   ]
+ [0.    0.568 0.008 ... 0.    0.    0.008]
+ [0.14  0.    0.38  ... 0.004 0.    0.   ]
+ ...
+ [0.056 0.052 0.04  ... 0.148 0.    0.012]
+ [0.004 0.024 0.004 ... 0.    0.024 0.   ]
+ [0.096 0.02  0.008 ... 0.    0.    0.088]]
+[2025-11-03 21:22:10,311 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:22:10,367 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:22:10,368 INFO] 37888 iteration, USE_EMA: True, train/sup_loss: 1.3627, train/aux_loss: 0.8109, train/total_loss: 2.1735, train/util_ratio: 0.1071, train/run_time: 0.0767, eval/loss: 3.2082, eval/top-1-acc: 0.2979, eval/top-5-acc: 0.5621, eval/balanced_acc: 0.2979, eval/precision: 0.3369, eval/recall: 0.2979, eval/F1: 0.2910, lr: 0.0294, train/prefecth_time: 0.0136 BEST_EVAL_ACC: 0.2979, at 37888 iters
+[2025-11-03 21:22:40,306 INFO] 38144 iteration USE_EMA: True, train/sup_loss: 1.1717, train/aux_loss: 0.5715, train/total_loss: 1.7431, train/util_ratio: 0.0982, train/run_time: 0.0751, lr: 0.0294, train/prefecth_time: 0.0135 
+[2025-11-03 21:23:06,358 INFO] 38400 iteration USE_EMA: True, train/sup_loss: 1.2701, train/aux_loss: 0.7097, train/total_loss: 1.9799, train/util_ratio: 0.0826, train/run_time: 0.0751, lr: 0.0294, train/prefecth_time: 0.0095 
+[2025-11-03 21:23:32,684 INFO] 38656 iteration USE_EMA: True, train/sup_loss: 1.3670, train/aux_loss: 0.7786, train/total_loss: 2.1456, train/util_ratio: 0.0960, train/run_time: 0.0751, lr: 0.0294, train/prefecth_time: 0.0153 
+[2025-11-03 21:23:58,641 INFO] validating...
+[2025-11-03 21:24:01,276 INFO] confusion matrix:
+[[0.224 0.008 0.084 ... 0.    0.    0.   ]
+ [0.    0.588 0.008 ... 0.    0.    0.008]
+ [0.136 0.004 0.368 ... 0.    0.    0.004]
+ ...
+ [0.04  0.06  0.04  ... 0.132 0.    0.024]
+ [0.004 0.02  0.004 ... 0.    0.02  0.   ]
+ [0.08  0.02  0.012 ... 0.    0.    0.12 ]]
+[2025-11-03 21:24:01,392 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:24:01,453 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:24:01,454 INFO] 38912 iteration, USE_EMA: True, train/sup_loss: 1.1671, train/aux_loss: 0.6117, train/total_loss: 1.7788, train/util_ratio: 0.0804, train/run_time: 0.0748, eval/loss: 3.2440, eval/top-1-acc: 0.3067, eval/top-5-acc: 0.5682, eval/balanced_acc: 0.3067, eval/precision: 0.3434, eval/recall: 0.3067, eval/F1: 0.3005, lr: 0.0294, train/prefecth_time: 0.0105 BEST_EVAL_ACC: 0.3067, at 38912 iters
+[2025-11-03 21:24:31,236 INFO] 39168 iteration USE_EMA: True, train/sup_loss: 1.1988, train/aux_loss: 0.4875, train/total_loss: 1.6863, train/util_ratio: 0.1027, train/run_time: 0.0755, lr: 0.0294, train/prefecth_time: 0.0127 
+[2025-11-03 21:24:57,326 INFO] 39424 iteration USE_EMA: True, train/sup_loss: 1.1518, train/aux_loss: 0.4743, train/total_loss: 1.6261, train/util_ratio: 0.1049, train/run_time: 0.0752, lr: 0.0294, train/prefecth_time: 0.0079 
+[2025-11-03 21:25:23,336 INFO] 39680 iteration USE_EMA: True, train/sup_loss: 1.1142, train/aux_loss: 0.4883, train/total_loss: 1.6025, train/util_ratio: 0.0871, train/run_time: 0.0750, lr: 0.0294, train/prefecth_time: 0.0124 
+[2025-11-03 21:25:49,475 INFO] validating...
+[2025-11-03 21:25:52,210 INFO] confusion matrix:
+[[0.228 0.008 0.08  ... 0.    0.    0.   ]
+ [0.    0.6   0.008 ... 0.    0.    0.008]
+ [0.116 0.008 0.376 ... 0.    0.    0.   ]
+ ...
+ [0.032 0.064 0.04  ... 0.12  0.    0.016]
+ [0.004 0.012 0.004 ... 0.    0.024 0.   ]
+ [0.068 0.024 0.008 ... 0.    0.    0.12 ]]
+[2025-11-03 21:25:52,315 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:25:52,370 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:25:52,371 INFO] 39936 iteration, USE_EMA: True, train/sup_loss: 1.0124, train/aux_loss: 0.3281, train/total_loss: 1.3405, train/util_ratio: 0.1384, train/run_time: 0.0751, eval/loss: 3.2713, eval/top-1-acc: 0.3086, eval/top-5-acc: 0.5690, eval/balanced_acc: 0.3086, eval/precision: 0.3430, eval/recall: 0.3086, eval/F1: 0.3015, lr: 0.0293, train/prefecth_time: 0.0084 BEST_EVAL_ACC: 0.3086, at 39936 iters
+[2025-11-03 21:26:21,212 INFO] 40192 iteration USE_EMA: True, train/sup_loss: 1.1732, train/aux_loss: 0.4806, train/total_loss: 1.6538, train/util_ratio: 0.1339, train/run_time: 0.0743, lr: 0.0293, train/prefecth_time: 0.0142 
+[2025-11-03 21:27:05,973 INFO] Use GPU: 0 for training
+[2025-11-03 21:31:14,213 INFO] unlabeled data number: 17789, labeled data number 1931
+[2025-11-03 21:31:14,213 INFO] Create train and test data loaders
+[2025-11-03 21:31:14,214 INFO] [!] data loader keys: dict_keys(['train_lb', 'train_ulb', 'eval'])
+[2025-11-03 21:31:14,259 INFO] Create optimizer and scheduler
+[2025-11-03 21:34:13,875 INFO] Number of Trainable Params: 1492910
+[2025-11-03 21:34:13,887 INFO] Arguments: Namespace(T=0.5, algorithm='fixmatch', alpha=1.0, amp=True, batch_size=64, c='config/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1_warmup.yaml', candidate_pool_dir='./data/generated', clip_grad=0.0, crop_ratio=0.875, data_dir='./data', dataset='food101', dist_backend='nccl', dist_url='tcp://127.0.0.1:25785', distributed=False, ema_m=0.999, energy_cutoff=-5.0, epoch=256, eval_batch_size=512, generated_data_dir='./data/generated', gpu=0, hard_label=True, imb_algorithm='gen_cpg', img_size=32, include_lb_to_ulb=False, layer_decay=1.0, lb_dest_len=1931, lb_imb_ratio=10, lb_imb_type='exp', load_path='./saved_models/gen_cpg/warm_up/model_best.pth', lr=0.03, momentum=0.9, multiprocessing_distributed=False, net='bi_rot_wrn_28_2', net_from_name=False, noise_per_class=False, noise_ratio=0.0, noise_type='asym', num_classes=101, num_eval_iter=1024, num_labels=50, num_log_iter=256, num_steps=5, num_train_iter=262144, num_warmup_iter=0, num_workers=20, optim='SGD', overwrite=True, p_cutoff=0.9, pretrain_path='', rank=0, resume=True, save_dir='./saved_models/gen_cpg', save_name='115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1', seed=1, smoothing=0.1, train_sampler='RandomSampler', ulb_dest_len=17789, ulb_imb_ratio=10, ulb_imb_type='exp_random', ulb_loss_ratio=1.0, ulb_num_labels=450, uratio=7, use_cat=True, use_pretrain=False, use_tensorboard=True, warm_up=30, weight_decay=0.0005, world_size=1)
+[2025-11-03 21:34:13,918 INFO] Model loaded
+[2025-11-03 21:34:13,918 INFO] Model training
+[2025-11-03 21:34:42,338 INFO] 29952 iteration USE_EMA: True, train/sup_loss: 0.8917, train/aux_loss: 3.1954, train/total_loss: 4.0871, train/util_ratio: 0.0000, train/run_time: 0.0741, lr: 0.0296, train/prefecth_time: 0.0122 
+[2025-11-03 21:35:09,185 INFO] 30208 iteration USE_EMA: True, train/sup_loss: 0.9043, train/aux_loss: 3.3138, train/total_loss: 4.2181, train/util_ratio: 0.0000, train/run_time: 0.0748, lr: 0.0296, train/prefecth_time: 0.0122 
+[2025-11-03 21:35:35,685 INFO] 30464 iteration USE_EMA: True, train/sup_loss: 0.9006, train/aux_loss: 3.1133, train/total_loss: 4.0139, train/util_ratio: 0.0000, train/run_time: 0.0763, lr: 0.0296, train/prefecth_time: 0.0148 
+[2025-11-03 21:36:01,927 INFO] validating...
+[2025-11-03 21:36:05,469 INFO] confusion matrix:
+[[0.212 0.004 0.048 ... 0.008 0.    0.016]
+ [0.008 0.576 0.008 ... 0.    0.    0.   ]
+ [0.112 0.008 0.332 ... 0.    0.    0.   ]
+ ...
+ [0.052 0.024 0.012 ... 0.144 0.    0.02 ]
+ [0.008 0.008 0.    ... 0.    0.024 0.   ]
+ [0.068 0.024 0.012 ... 0.    0.004 0.092]]
+[2025-11-03 21:36:05,589 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:36:05,650 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:36:05,651 INFO] 30720 iteration, USE_EMA: True, train/sup_loss: 0.8776, train/aux_loss: 3.1015, train/total_loss: 3.9791, train/util_ratio: 0.0000, train/run_time: 0.0750, eval/loss: 3.3717, eval/top-1-acc: 0.2894, eval/top-5-acc: 0.5279, eval/balanced_acc: 0.2894, eval/precision: 0.3091, eval/recall: 0.2894, eval/F1: 0.2830, lr: 0.0296, train/prefecth_time: 0.0112 BEST_EVAL_ACC: 0.2894, at 30720 iters
+[2025-11-03 21:36:35,618 INFO] 30976 iteration USE_EMA: True, train/sup_loss: 1.7100, train/aux_loss: 1.1704, train/total_loss: 2.8804, train/util_ratio: 0.0536, train/run_time: 0.0745, lr: 0.0296, train/prefecth_time: 0.0090 
+[2025-11-03 21:37:01,835 INFO] 31232 iteration USE_EMA: True, train/sup_loss: 1.1879, train/aux_loss: 0.4451, train/total_loss: 1.6330, train/util_ratio: 0.1205, train/run_time: 0.0745, lr: 0.0296, train/prefecth_time: 0.0127 
+[2025-11-03 21:37:28,052 INFO] 31488 iteration USE_EMA: True, train/sup_loss: 0.9194, train/aux_loss: 0.1759, train/total_loss: 1.0953, train/util_ratio: 0.0871, train/run_time: 0.0753, lr: 0.0296, train/prefecth_time: 0.0168 
+[2025-11-03 21:37:54,023 INFO] validating...
+[2025-11-03 21:37:56,411 INFO] confusion matrix:
+[[0.2   0.008 0.036 ... 0.008 0.    0.008]
+ [0.008 0.5   0.004 ... 0.    0.    0.   ]
+ [0.116 0.004 0.36  ... 0.    0.    0.   ]
+ ...
+ [0.044 0.048 0.008 ... 0.156 0.    0.012]
+ [0.012 0.004 0.    ... 0.    0.028 0.   ]
+ [0.072 0.024 0.004 ... 0.004 0.    0.076]]
+[2025-11-03 21:37:56,518 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:37:56,518 INFO] 31744 iteration, USE_EMA: True, train/sup_loss: 0.8341, train/aux_loss: 0.1181, train/total_loss: 0.9522, train/util_ratio: 0.0960, train/run_time: 0.0735, eval/loss: 3.3248, eval/top-1-acc: 0.2814, eval/top-5-acc: 0.5296, eval/balanced_acc: 0.2814, eval/precision: 0.3058, eval/recall: 0.2814, eval/F1: 0.2750, lr: 0.0296, train/prefecth_time: 0.0141 BEST_EVAL_ACC: 0.2894, at 30720 iters
+[2025-11-03 21:38:26,188 INFO] 32000 iteration USE_EMA: True, train/sup_loss: 0.8301, train/aux_loss: 0.1088, train/total_loss: 0.9390, train/util_ratio: 0.0737, train/run_time: 0.0759, lr: 0.0296, train/prefecth_time: 0.0101 
+[2025-11-03 21:38:52,377 INFO] 32256 iteration USE_EMA: True, train/sup_loss: 0.8356, train/aux_loss: 0.0897, train/total_loss: 0.9253, train/util_ratio: 0.0826, train/run_time: 0.0752, lr: 0.0296, train/prefecth_time: 0.0126 
+[2025-11-03 21:39:18,513 INFO] 32512 iteration USE_EMA: True, train/sup_loss: 0.8240, train/aux_loss: 0.1224, train/total_loss: 0.9464, train/util_ratio: 0.1094, train/run_time: 0.0757, lr: 0.0296, train/prefecth_time: 0.0121 
+[2025-11-03 21:39:44,624 INFO] validating...
+[2025-11-03 21:39:47,315 INFO] confusion matrix:
+[[0.188 0.004 0.04  ... 0.008 0.    0.008]
+ [0.008 0.524 0.004 ... 0.    0.    0.   ]
+ [0.108 0.004 0.344 ... 0.    0.    0.   ]
+ ...
+ [0.044 0.04  0.004 ... 0.152 0.    0.016]
+ [0.012 0.004 0.    ... 0.    0.028 0.   ]
+ [0.064 0.02  0.008 ... 0.004 0.    0.104]]
+[2025-11-03 21:39:47,427 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:39:47,428 INFO] 32768 iteration, USE_EMA: True, train/sup_loss: 0.8250, train/aux_loss: 0.1198, train/total_loss: 0.9448, train/util_ratio: 0.0804, train/run_time: 0.0751, eval/loss: 3.3082, eval/top-1-acc: 0.2824, eval/top-5-acc: 0.5238, eval/balanced_acc: 0.2824, eval/precision: 0.2980, eval/recall: 0.2824, eval/F1: 0.2745, lr: 0.0296, train/prefecth_time: 0.0144 BEST_EVAL_ACC: 0.2894, at 30720 iters
+[2025-11-03 21:40:17,840 INFO] 33024 iteration USE_EMA: True, train/sup_loss: 0.8237, train/aux_loss: 0.1403, train/total_loss: 0.9639, train/util_ratio: 0.0826, train/run_time: 0.0739, lr: 0.0296, train/prefecth_time: 0.0153 
+[2025-11-03 21:40:44,063 INFO] 33280 iteration USE_EMA: True, train/sup_loss: 0.8363, train/aux_loss: 0.1090, train/total_loss: 0.9453, train/util_ratio: 0.1228, train/run_time: 0.0794, lr: 0.0295, train/prefecth_time: 0.0093 
+[2025-11-03 21:41:10,385 INFO] 33536 iteration USE_EMA: True, train/sup_loss: 0.8244, train/aux_loss: 0.1398, train/total_loss: 0.9642, train/util_ratio: 0.0893, train/run_time: 0.0750, lr: 0.0295, train/prefecth_time: 0.0142 
+[2025-11-03 21:41:36,316 INFO] validating...
+[2025-11-03 21:41:38,890 INFO] confusion matrix:
+[[0.188 0.004 0.036 ... 0.004 0.    0.008]
+ [0.008 0.516 0.    ... 0.    0.    0.   ]
+ [0.092 0.004 0.336 ... 0.004 0.    0.   ]
+ ...
+ [0.04  0.052 0.004 ... 0.152 0.    0.016]
+ [0.012 0.004 0.    ... 0.    0.028 0.   ]
+ [0.06  0.024 0.008 ... 0.004 0.    0.084]]
+[2025-11-03 21:41:39,013 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:41:39,014 INFO] 33792 iteration, USE_EMA: True, train/sup_loss: 1.9380, train/aux_loss: 1.4782, train/total_loss: 3.4162, train/util_ratio: 0.0290, train/run_time: 0.0746, eval/loss: 3.2788, eval/top-1-acc: 0.2828, eval/top-5-acc: 0.5259, eval/balanced_acc: 0.2828, eval/precision: 0.3047, eval/recall: 0.2828, eval/F1: 0.2756, lr: 0.0295, train/prefecth_time: 0.0093 BEST_EVAL_ACC: 0.2894, at 30720 iters
+[2025-11-03 21:42:07,788 INFO] 34048 iteration USE_EMA: True, train/sup_loss: 1.2527, train/aux_loss: 0.5698, train/total_loss: 1.8225, train/util_ratio: 0.0670, train/run_time: 0.0752, lr: 0.0295, train/prefecth_time: 0.0118 
+[2025-11-03 21:42:33,927 INFO] 34304 iteration USE_EMA: True, train/sup_loss: 0.9535, train/aux_loss: 0.1552, train/total_loss: 1.1087, train/util_ratio: 0.0580, train/run_time: 0.0758, lr: 0.0295, train/prefecth_time: 0.0169 
+[2025-11-03 21:43:00,142 INFO] 34560 iteration USE_EMA: True, train/sup_loss: 0.8704, train/aux_loss: 0.1193, train/total_loss: 0.9897, train/util_ratio: 0.0558, train/run_time: 0.0742, lr: 0.0295, train/prefecth_time: 0.0112 
+[2025-11-03 21:43:26,311 INFO] validating...
+[2025-11-03 21:43:28,959 INFO] confusion matrix:
+[[0.184 0.    0.056 ... 0.004 0.    0.008]
+ [0.008 0.464 0.004 ... 0.    0.    0.   ]
+ [0.1   0.004 0.34  ... 0.004 0.    0.   ]
+ ...
+ [0.04  0.04  0.012 ... 0.148 0.    0.008]
+ [0.012 0.008 0.    ... 0.    0.032 0.   ]
+ [0.072 0.016 0.004 ... 0.    0.    0.06 ]]
+[2025-11-03 21:43:29,071 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:43:29,072 INFO] 34816 iteration, USE_EMA: True, train/sup_loss: 0.8382, train/aux_loss: 0.0920, train/total_loss: 0.9302, train/util_ratio: 0.0647, train/run_time: 0.0751, eval/loss: 3.2864, eval/top-1-acc: 0.2790, eval/top-5-acc: 0.5267, eval/balanced_acc: 0.2790, eval/precision: 0.2970, eval/recall: 0.2790, eval/F1: 0.2720, lr: 0.0295, train/prefecth_time: 0.0136 BEST_EVAL_ACC: 0.2894, at 30720 iters
+[2025-11-03 21:43:58,506 INFO] 35072 iteration USE_EMA: True, train/sup_loss: 0.8321, train/aux_loss: 0.1321, train/total_loss: 0.9641, train/util_ratio: 0.0714, train/run_time: 0.0757, lr: 0.0295, train/prefecth_time: 0.0161 
+[2025-11-03 21:44:24,769 INFO] 35328 iteration USE_EMA: True, train/sup_loss: 0.8349, train/aux_loss: 0.1476, train/total_loss: 0.9824, train/util_ratio: 0.0871, train/run_time: 0.0771, lr: 0.0295, train/prefecth_time: 0.0200 
+[2025-11-03 21:44:51,142 INFO] 35584 iteration USE_EMA: True, train/sup_loss: 0.8299, train/aux_loss: 0.0875, train/total_loss: 0.9174, train/util_ratio: 0.0826, train/run_time: 0.0757, lr: 0.0295, train/prefecth_time: 0.0181 
+[2025-11-03 21:45:17,133 INFO] validating...
+[2025-11-03 21:45:19,652 INFO] confusion matrix:
+[[0.2   0.004 0.052 ... 0.004 0.    0.008]
+ [0.004 0.492 0.    ... 0.    0.    0.   ]
+ [0.08  0.    0.34  ... 0.    0.    0.   ]
+ ...
+ [0.044 0.044 0.008 ... 0.132 0.004 0.008]
+ [0.004 0.008 0.    ... 0.    0.024 0.   ]
+ [0.076 0.024 0.008 ... 0.    0.    0.052]]
+[2025-11-03 21:45:19,749 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:45:19,750 INFO] 35840 iteration, USE_EMA: True, train/sup_loss: 0.8495, train/aux_loss: 0.1242, train/total_loss: 0.9737, train/util_ratio: 0.0804, train/run_time: 0.0754, eval/loss: 3.3075, eval/top-1-acc: 0.2818, eval/top-5-acc: 0.5227, eval/balanced_acc: 0.2818, eval/precision: 0.2978, eval/recall: 0.2818, eval/F1: 0.2744, lr: 0.0295, train/prefecth_time: 0.0084 BEST_EVAL_ACC: 0.2894, at 30720 iters
+[2025-11-03 21:45:34,373 INFO] select_ulb_dist:
+[ 31. 121.  24.  60. 107. 116.  75. 177.  38.  28.  84. 124.  44.  88.
+  28.  56.  21.  47.  58.  39.  74.  17.  11.  13.  34.  96.  16.  13.
+  41.  16.  65.  11. 109.  74.  57.  48.  27.  24.  25.  40.  38.  25.
+  19.  19.  73.  55.  15.  16.  30.  17.  30.  43.  13.  10.  22.  13.
+  15.  11.  15.  36.  42.  34.  33.  14.  13.  47.  21.  11.   7.  74.
+  31.  36.   5.   9.  19.  11.  28.  21.  11.  48.   7.   9.  11.  20.
+  38.   9.  68.   4.  95.  11.  11.  14.   3.  12.   7.  43.   9.  13.
+   4.   4.  11.]
+[2025-11-03 21:45:34,374 INFO] lb_select_ulb_dist:
+[ 81. 171.  74. 110. 157. 166. 125. 227.  88.  78. 134. 174.  94. 138.
+  78. 106.  71.  97. 108.  89. 124.  67.  61.  63.  84. 146.  66.  63.
+  91.  66. 115.  61. 159. 124. 107.  98.  77.  74.  75.  90.  88.  75.
+  69.  69. 123. 105.  65.  66.  80.  67.  80.  93.  63.  60.  72.  63.
+  65.  61.  65.  86.  92.  84.  83.  64.  63.  97.  71.  61.  57. 124.
+  81.  86.  55.  59.  69.  61.  78.  71.  61.  98.  57.  59.  61.  70.
+  88.  59. 118.  54. 145.  61.  61.  64.  53.  62.  57.  93.  59.  63.
+  54.  54.  61.]
+[2025-11-03 21:45:34,432 INFO] sampled 14267 images from pool.
+[2025-11-03 21:45:34,494 INFO] 35: Update the labeled data.
+[2025-11-03 21:46:01,732 INFO] 36096 iteration USE_EMA: True, train/sup_loss: 1.9581, train/aux_loss: 1.6089, train/total_loss: 3.5669, train/util_ratio: 0.0625, train/run_time: 0.0747, lr: 0.0295, train/prefecth_time: 0.0142 
+[2025-11-03 21:46:27,621 INFO] 36352 iteration USE_EMA: True, train/sup_loss: 1.8150, train/aux_loss: 1.4293, train/total_loss: 3.2442, train/util_ratio: 0.0804, train/run_time: 0.0748, lr: 0.0295, train/prefecth_time: 0.0120 
+[2025-11-03 21:46:53,541 INFO] 36608 iteration USE_EMA: True, train/sup_loss: 1.7388, train/aux_loss: 1.3163, train/total_loss: 3.0550, train/util_ratio: 0.0781, train/run_time: 0.0750, lr: 0.0294, train/prefecth_time: 0.0086 
+[2025-11-03 21:47:19,499 INFO] validating...
+[2025-11-03 21:47:22,326 INFO] confusion matrix:
+[[0.284 0.004 0.068 ... 0.    0.    0.   ]
+ [0.    0.532 0.004 ... 0.    0.    0.   ]
+ [0.124 0.004 0.392 ... 0.    0.    0.   ]
+ ...
+ [0.056 0.036 0.024 ... 0.168 0.    0.004]
+ [0.    0.004 0.004 ... 0.    0.024 0.   ]
+ [0.1   0.008 0.012 ... 0.    0.    0.02 ]]
+[2025-11-03 21:47:22,427 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:47:22,428 INFO] 36864 iteration, USE_EMA: True, train/sup_loss: 1.5840, train/aux_loss: 1.1834, train/total_loss: 2.7674, train/util_ratio: 0.0982, train/run_time: 0.0736, eval/loss: 3.1254, eval/top-1-acc: 0.2890, eval/top-5-acc: 0.5604, eval/balanced_acc: 0.2890, eval/precision: 0.3367, eval/recall: 0.2890, eval/F1: 0.2826, lr: 0.0294, train/prefecth_time: 0.0128 BEST_EVAL_ACC: 0.2894, at 30720 iters
+[2025-11-03 21:47:51,507 INFO] 37120 iteration USE_EMA: True, train/sup_loss: 1.4422, train/aux_loss: 0.9366, train/total_loss: 2.3788, train/util_ratio: 0.0915, train/run_time: 0.0747, lr: 0.0294, train/prefecth_time: 0.0145 
+[2025-11-03 21:48:17,495 INFO] 37376 iteration USE_EMA: True, train/sup_loss: 1.5603, train/aux_loss: 1.2460, train/total_loss: 2.8063, train/util_ratio: 0.1183, train/run_time: 0.0751, lr: 0.0294, train/prefecth_time: 0.0141 
+[2025-11-03 21:48:43,460 INFO] 37632 iteration USE_EMA: True, train/sup_loss: 1.3083, train/aux_loss: 0.7164, train/total_loss: 2.0247, train/util_ratio: 0.1250, train/run_time: 0.0750, lr: 0.0294, train/prefecth_time: 0.0113 
+[2025-11-03 21:49:09,228 INFO] validating...
+[2025-11-03 21:49:12,534 INFO] confusion matrix:
+[[0.26  0.008 0.076 ... 0.    0.    0.   ]
+ [0.    0.548 0.008 ... 0.    0.    0.   ]
+ [0.124 0.004 0.416 ... 0.004 0.    0.   ]
+ ...
+ [0.056 0.036 0.028 ... 0.16  0.    0.004]
+ [0.    0.012 0.    ... 0.004 0.024 0.   ]
+ [0.12  0.016 0.016 ... 0.    0.    0.036]]
+[2025-11-03 21:49:12,632 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:49:12,689 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:49:12,690 INFO] 37888 iteration, USE_EMA: True, train/sup_loss: 1.4633, train/aux_loss: 1.0107, train/total_loss: 2.4740, train/util_ratio: 0.1161, train/run_time: 0.0742, eval/loss: 3.1651, eval/top-1-acc: 0.3050, eval/top-5-acc: 0.5759, eval/balanced_acc: 0.3050, eval/precision: 0.3478, eval/recall: 0.3050, eval/F1: 0.2995, lr: 0.0294, train/prefecth_time: 0.0090 BEST_EVAL_ACC: 0.3050, at 37888 iters
+[2025-11-03 21:49:42,805 INFO] 38144 iteration USE_EMA: True, train/sup_loss: 1.3776, train/aux_loss: 0.9556, train/total_loss: 2.3332, train/util_ratio: 0.0647, train/run_time: 0.0751, lr: 0.0294, train/prefecth_time: 0.0122 
+[2025-11-03 21:50:08,984 INFO] 38400 iteration USE_EMA: True, train/sup_loss: 1.3421, train/aux_loss: 0.8725, train/total_loss: 2.2146, train/util_ratio: 0.1071, train/run_time: 0.0738, lr: 0.0294, train/prefecth_time: 0.0113 
+[2025-11-03 21:50:35,067 INFO] 38656 iteration USE_EMA: True, train/sup_loss: 1.1696, train/aux_loss: 0.5411, train/total_loss: 1.7107, train/util_ratio: 0.1027, train/run_time: 0.0748, lr: 0.0294, train/prefecth_time: 0.0134 
+[2025-11-03 21:51:00,886 INFO] validating...
+[2025-11-03 21:51:03,536 INFO] confusion matrix:
+[[0.252 0.008 0.072 ... 0.004 0.    0.   ]
+ [0.    0.54  0.004 ... 0.    0.    0.   ]
+ [0.112 0.004 0.408 ... 0.004 0.    0.004]
+ ...
+ [0.052 0.044 0.012 ... 0.192 0.    0.008]
+ [0.    0.004 0.    ... 0.    0.028 0.   ]
+ [0.104 0.012 0.012 ... 0.    0.    0.056]]
+[2025-11-03 21:51:03,630 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:51:03,685 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:51:03,686 INFO] 38912 iteration, USE_EMA: True, train/sup_loss: 1.4111, train/aux_loss: 1.0073, train/total_loss: 2.4184, train/util_ratio: 0.1339, train/run_time: 0.0746, eval/loss: 3.2185, eval/top-1-acc: 0.3127, eval/top-5-acc: 0.5791, eval/balanced_acc: 0.3127, eval/precision: 0.3526, eval/recall: 0.3127, eval/F1: 0.3069, lr: 0.0294, train/prefecth_time: 0.0111 BEST_EVAL_ACC: 0.3127, at 38912 iters
+[2025-11-03 21:51:32,266 INFO] 39168 iteration USE_EMA: True, train/sup_loss: 1.3082, train/aux_loss: 0.8162, train/total_loss: 2.1245, train/util_ratio: 0.1071, train/run_time: 0.0743, lr: 0.0294, train/prefecth_time: 0.0107 
+[2025-11-03 21:51:57,498 INFO] 39424 iteration USE_EMA: True, train/sup_loss: 1.2683, train/aux_loss: 0.8414, train/total_loss: 2.1098, train/util_ratio: 0.1138, train/run_time: 0.0752, lr: 0.0294, train/prefecth_time: 0.0133 
+[2025-11-03 21:52:23,210 INFO] 39680 iteration USE_EMA: True, train/sup_loss: 1.2114, train/aux_loss: 0.6648, train/total_loss: 1.8762, train/util_ratio: 0.0982, train/run_time: 0.0750, lr: 0.0294, train/prefecth_time: 0.0159 
+[2025-11-03 21:52:48,482 INFO] validating...
+[2025-11-03 21:52:51,172 INFO] confusion matrix:
+[[0.236 0.008 0.068 ... 0.    0.    0.   ]
+ [0.    0.584 0.004 ... 0.    0.    0.   ]
+ [0.112 0.004 0.372 ... 0.004 0.    0.004]
+ ...
+ [0.048 0.06  0.02  ... 0.184 0.    0.008]
+ [0.    0.008 0.    ... 0.    0.024 0.   ]
+ [0.108 0.016 0.012 ... 0.    0.    0.072]]
+[2025-11-03 21:52:51,293 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:52:51,348 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:52:51,349 INFO] 39936 iteration, USE_EMA: True, train/sup_loss: 1.3388, train/aux_loss: 0.8409, train/total_loss: 2.1797, train/util_ratio: 0.1406, train/run_time: 0.0748, eval/loss: 3.2490, eval/top-1-acc: 0.3136, eval/top-5-acc: 0.5798, eval/balanced_acc: 0.3136, eval/precision: 0.3520, eval/recall: 0.3136, eval/F1: 0.3076, lr: 0.0293, train/prefecth_time: 0.0101 BEST_EVAL_ACC: 0.3136, at 39936 iters
+[2025-11-03 21:53:21,004 INFO] 40192 iteration USE_EMA: True, train/sup_loss: 1.1711, train/aux_loss: 0.6817, train/total_loss: 1.8528, train/util_ratio: 0.1049, train/run_time: 0.0742, lr: 0.0293, train/prefecth_time: 0.0122 
+[2025-11-03 21:53:47,203 INFO] 40448 iteration USE_EMA: True, train/sup_loss: 1.1871, train/aux_loss: 0.7289, train/total_loss: 1.9160, train/util_ratio: 0.1295, train/run_time: 0.0752, lr: 0.0293, train/prefecth_time: 0.0145 
+[2025-11-03 21:54:13,368 INFO] 40704 iteration USE_EMA: True, train/sup_loss: 1.2332, train/aux_loss: 0.7494, train/total_loss: 1.9826, train/util_ratio: 0.1027, train/run_time: 0.0753, lr: 0.0293, train/prefecth_time: 0.0152 
+[2025-11-03 21:54:39,165 INFO] validating...
+[2025-11-03 21:54:41,877 INFO] confusion matrix:
+[[0.212 0.008 0.072 ... 0.    0.    0.   ]
+ [0.    0.584 0.004 ... 0.    0.    0.   ]
+ [0.1   0.004 0.392 ... 0.004 0.    0.004]
+ ...
+ [0.028 0.072 0.024 ... 0.16  0.    0.012]
+ [0.    0.008 0.    ... 0.    0.024 0.   ]
+ [0.096 0.012 0.016 ... 0.    0.    0.088]]
+[2025-11-03 21:54:41,977 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:54:42,034 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:54:42,035 INFO] 40960 iteration, USE_EMA: True, train/sup_loss: 1.3819, train/aux_loss: 0.9070, train/total_loss: 2.2889, train/util_ratio: 0.1429, train/run_time: 0.0745, eval/loss: 3.2592, eval/top-1-acc: 0.3173, eval/top-5-acc: 0.5834, eval/balanced_acc: 0.3173, eval/precision: 0.3542, eval/recall: 0.3173, eval/F1: 0.3109, lr: 0.0293, train/prefecth_time: 0.0109 BEST_EVAL_ACC: 0.3173, at 40960 iters
+[2025-11-03 21:55:01,700 INFO] select_ulb_dist:
+[ 45. 195.  33.  82. 178. 176. 102. 272.  57.  37. 146. 186.  85. 117.
+  36.  68.  30.  55.  81.  71. 118.  27.   9.  11.  45. 140.  11.  18.
+  49.  19.  83.   8. 123.  85.  69.  44.  41.  35.  37.  55.  52.  17.
+  14.  26. 130.  90.  11.  12.  35.  14.  43.  53.  14.  12.  24.  19.
+  12.   6.  17.  60.  55.  59.  54.  18.  11.  79.  36.  15.  11. 105.
+  39.  75.  10.   5.  26.  11.  49.  18.  12.  71.   7.   9.   7.  21.
+  58.   8. 128.   4. 148.  11.  15.  14.   1.  11.  14.  57.  12.  14.
+   5.   5.  12.]
+[2025-11-03 21:55:01,701 INFO] lb_select_ulb_dist:
+[ 95. 245.  83. 132. 228. 226. 152. 322. 107.  87. 196. 236. 135. 167.
+  86. 118.  80. 105. 131. 121. 168.  77.  59.  61.  95. 190.  61.  68.
+  99.  69. 133.  58. 173. 135. 119.  94.  91.  85.  87. 105. 102.  67.
+  64.  76. 180. 140.  61.  62.  85.  64.  93. 103.  64.  62.  74.  69.
+  62.  56.  67. 110. 105. 109. 104.  68.  61. 129.  86.  65.  61. 155.
+  89. 125.  60.  55.  76.  61.  99.  68.  62. 121.  57.  59.  57.  71.
+ 108.  58. 178.  54. 198.  61.  65.  64.  51.  61.  64. 107.  62.  64.
+  55.  55.  62.]
+[2025-11-03 21:55:01,793 INFO] sampled 22412 images from pool.
+[2025-11-03 21:55:01,886 INFO] 40: Update the labeled data.
+[2025-11-03 21:55:30,524 INFO] 41216 iteration USE_EMA: True, train/sup_loss: 1.5237, train/aux_loss: 0.9871, train/total_loss: 2.5108, train/util_ratio: 0.1094, train/run_time: 0.0763, lr: 0.0293, train/prefecth_time: 0.0129 
+[2025-11-03 21:55:56,627 INFO] 41472 iteration USE_EMA: True, train/sup_loss: 1.2530, train/aux_loss: 0.7100, train/total_loss: 1.9630, train/util_ratio: 0.1228, train/run_time: 0.0767, lr: 0.0293, train/prefecth_time: 0.0155 
+[2025-11-03 21:56:22,832 INFO] 41728 iteration USE_EMA: True, train/sup_loss: 1.2551, train/aux_loss: 0.7631, train/total_loss: 2.0182, train/util_ratio: 0.1161, train/run_time: 0.0755, lr: 0.0293, train/prefecth_time: 0.0129 
+[2025-11-03 21:56:49,104 INFO] validating...
+[2025-11-03 21:56:52,018 INFO] confusion matrix:
+[[0.212 0.008 0.064 ... 0.    0.    0.   ]
+ [0.    0.596 0.004 ... 0.    0.    0.004]
+ [0.116 0.004 0.376 ... 0.004 0.    0.004]
+ ...
+ [0.052 0.064 0.016 ... 0.18  0.    0.008]
+ [0.    0.008 0.    ... 0.    0.028 0.   ]
+ [0.096 0.016 0.012 ... 0.004 0.    0.08 ]]
+[2025-11-03 21:56:52,120 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:56:52,176 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:56:52,177 INFO] 41984 iteration, USE_EMA: True, train/sup_loss: 1.3291, train/aux_loss: 0.8338, train/total_loss: 2.1629, train/util_ratio: 0.1228, train/run_time: 0.0749, eval/loss: 3.2038, eval/top-1-acc: 0.3211, eval/top-5-acc: 0.5935, eval/balanced_acc: 0.3211, eval/precision: 0.3630, eval/recall: 0.3211, eval/F1: 0.3151, lr: 0.0293, train/prefecth_time: 0.0100 BEST_EVAL_ACC: 0.3211, at 41984 iters
+[2025-11-03 21:57:22,289 INFO] 42240 iteration USE_EMA: True, train/sup_loss: 1.3304, train/aux_loss: 0.7655, train/total_loss: 2.0959, train/util_ratio: 0.1339, train/run_time: 0.0751, lr: 0.0293, train/prefecth_time: 0.0122 
+[2025-11-03 21:57:48,475 INFO] 42496 iteration USE_EMA: True, train/sup_loss: 1.1489, train/aux_loss: 0.6814, train/total_loss: 1.8303, train/util_ratio: 0.1473, train/run_time: 0.0751, lr: 0.0293, train/prefecth_time: 0.0154 
+[2025-11-03 21:58:14,723 INFO] 42752 iteration USE_EMA: True, train/sup_loss: 1.2173, train/aux_loss: 0.7313, train/total_loss: 1.9486, train/util_ratio: 0.1429, train/run_time: 0.0751, lr: 0.0292, train/prefecth_time: 0.0154 
+[2025-11-03 21:58:40,791 INFO] validating...
+[2025-11-03 21:58:43,724 INFO] confusion matrix:
+[[0.244 0.008 0.084 ... 0.    0.    0.   ]
+ [0.    0.596 0.004 ... 0.    0.    0.008]
+ [0.112 0.    0.412 ... 0.004 0.    0.004]
+ ...
+ [0.04  0.064 0.028 ... 0.152 0.    0.   ]
+ [0.    0.008 0.004 ... 0.    0.024 0.   ]
+ [0.1   0.016 0.016 ... 0.    0.    0.068]]
+[2025-11-03 21:58:43,820 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 21:58:43,875 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 21:58:43,876 INFO] 43008 iteration, USE_EMA: True, train/sup_loss: 1.2855, train/aux_loss: 0.8028, train/total_loss: 2.0882, train/util_ratio: 0.1518, train/run_time: 0.0752, eval/loss: 3.2080, eval/top-1-acc: 0.3244, eval/top-5-acc: 0.5956, eval/balanced_acc: 0.3244, eval/precision: 0.3680, eval/recall: 0.3244, eval/F1: 0.3176, lr: 0.0292, train/prefecth_time: 0.0130 BEST_EVAL_ACC: 0.3244, at 43008 iters
+[2025-11-03 21:59:14,725 INFO] 43264 iteration USE_EMA: True, train/sup_loss: 1.1240, train/aux_loss: 0.4983, train/total_loss: 1.6223, train/util_ratio: 0.1473, train/run_time: 0.0780, lr: 0.0292, train/prefecth_time: 0.0123 
+[2025-11-03 21:59:40,875 INFO] 43520 iteration USE_EMA: True, train/sup_loss: 1.0735, train/aux_loss: 0.5035, train/total_loss: 1.5770, train/util_ratio: 0.1362, train/run_time: 0.0752, lr: 0.0292, train/prefecth_time: 0.0088 
+[2025-11-03 22:00:07,070 INFO] 43776 iteration USE_EMA: True, train/sup_loss: 1.2380, train/aux_loss: 0.8079, train/total_loss: 2.0459, train/util_ratio: 0.1473, train/run_time: 0.0750, lr: 0.0292, train/prefecth_time: 0.0155 
+[2025-11-03 22:00:33,119 INFO] validating...
+[2025-11-03 22:00:36,063 INFO] confusion matrix:
+[[0.22  0.008 0.084 ... 0.    0.    0.   ]
+ [0.    0.6   0.    ... 0.    0.    0.008]
+ [0.108 0.004 0.412 ... 0.004 0.    0.   ]
+ ...
+ [0.036 0.064 0.024 ... 0.168 0.    0.   ]
+ [0.004 0.02  0.004 ... 0.    0.016 0.   ]
+ [0.1   0.032 0.02  ... 0.    0.    0.084]]
+[2025-11-03 22:00:36,162 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:00:36,217 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:00:36,218 INFO] 44032 iteration, USE_EMA: True, train/sup_loss: 1.1461, train/aux_loss: 0.6642, train/total_loss: 1.8103, train/util_ratio: 0.1339, train/run_time: 0.0746, eval/loss: 3.2129, eval/top-1-acc: 0.3259, eval/top-5-acc: 0.5980, eval/balanced_acc: 0.3259, eval/precision: 0.3697, eval/recall: 0.3259, eval/F1: 0.3185, lr: 0.0292, train/prefecth_time: 0.0114 BEST_EVAL_ACC: 0.3259, at 44032 iters
+[2025-11-03 22:01:06,891 INFO] 44288 iteration USE_EMA: True, train/sup_loss: 1.2226, train/aux_loss: 0.5591, train/total_loss: 1.7817, train/util_ratio: 0.1451, train/run_time: 0.0749, lr: 0.0292, train/prefecth_time: 0.0157 
+[2025-11-03 22:01:33,014 INFO] 44544 iteration USE_EMA: True, train/sup_loss: 1.0777, train/aux_loss: 0.5474, train/total_loss: 1.6251, train/util_ratio: 0.1250, train/run_time: 0.0742, lr: 0.0292, train/prefecth_time: 0.0125 
+[2025-11-03 22:01:59,138 INFO] 44800 iteration USE_EMA: True, train/sup_loss: 1.1671, train/aux_loss: 0.6653, train/total_loss: 1.8324, train/util_ratio: 0.1518, train/run_time: 0.0753, lr: 0.0292, train/prefecth_time: 0.0118 
+[2025-11-03 22:02:25,307 INFO] validating...
+[2025-11-03 22:02:28,291 INFO] confusion matrix:
+[[0.244 0.008 0.088 ... 0.    0.    0.   ]
+ [0.    0.624 0.    ... 0.    0.    0.008]
+ [0.116 0.004 0.424 ... 0.004 0.    0.   ]
+ ...
+ [0.032 0.064 0.028 ... 0.156 0.    0.   ]
+ [0.004 0.024 0.004 ... 0.    0.016 0.   ]
+ [0.096 0.036 0.02  ... 0.008 0.    0.076]]
+[2025-11-03 22:02:28,392 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:02:28,393 INFO] 45056 iteration, USE_EMA: True, train/sup_loss: 1.1314, train/aux_loss: 0.5410, train/total_loss: 1.6724, train/util_ratio: 0.1339, train/run_time: 0.0828, eval/loss: 3.2143, eval/top-1-acc: 0.3249, eval/top-5-acc: 0.5983, eval/balanced_acc: 0.3249, eval/precision: 0.3692, eval/recall: 0.3249, eval/F1: 0.3167, lr: 0.0292, train/prefecth_time: 0.0138 BEST_EVAL_ACC: 0.3259, at 44032 iters
+[2025-11-03 22:02:58,035 INFO] 45312 iteration USE_EMA: True, train/sup_loss: 1.1800, train/aux_loss: 0.5028, train/total_loss: 1.6828, train/util_ratio: 0.1607, train/run_time: 0.0756, lr: 0.0292, train/prefecth_time: 0.0169 
+[2025-11-03 22:03:24,314 INFO] 45568 iteration USE_EMA: True, train/sup_loss: 1.1052, train/aux_loss: 0.5593, train/total_loss: 1.6645, train/util_ratio: 0.1562, train/run_time: 0.0753, lr: 0.0291, train/prefecth_time: 0.0126 
+[2025-11-03 22:03:50,418 INFO] 45824 iteration USE_EMA: True, train/sup_loss: 1.1637, train/aux_loss: 0.5713, train/total_loss: 1.7350, train/util_ratio: 0.1071, train/run_time: 0.0749, lr: 0.0291, train/prefecth_time: 0.0120 
+[2025-11-03 22:04:16,342 INFO] validating...
+[2025-11-03 22:04:19,630 INFO] confusion matrix:
+[[0.22  0.012 0.076 ... 0.    0.    0.   ]
+ [0.    0.616 0.    ... 0.    0.    0.008]
+ [0.116 0.008 0.408 ... 0.004 0.    0.   ]
+ ...
+ [0.024 0.072 0.024 ... 0.168 0.    0.004]
+ [0.004 0.024 0.    ... 0.    0.02  0.   ]
+ [0.1   0.036 0.024 ... 0.    0.    0.092]]
+[2025-11-03 22:04:19,725 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:04:19,780 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:04:19,781 INFO] 46080 iteration, USE_EMA: True, train/sup_loss: 1.0633, train/aux_loss: 0.4804, train/total_loss: 1.5437, train/util_ratio: 0.1473, train/run_time: 0.0750, eval/loss: 3.2284, eval/top-1-acc: 0.3264, eval/top-5-acc: 0.5968, eval/balanced_acc: 0.3264, eval/precision: 0.3729, eval/recall: 0.3264, eval/F1: 0.3184, lr: 0.0291, train/prefecth_time: 0.0095 BEST_EVAL_ACC: 0.3264, at 46080 iters
+[2025-11-03 22:04:42,938 INFO] select_ulb_dist:
+[ 67. 240.  41.  89. 213. 206. 116. 351.  76.  46. 196. 223. 113. 129.
+  48.  67.  36.  59.  96.  91. 151.  29.   8.  10.  45. 178.  11.  21.
+  51.  22.  88.   5. 128.  81.  81.  42.  50.  39.  43.  72.  56.  16.
+  15.  28. 170. 127.  12.  10.  35.  11.  52.  56.  13.  15.  22.  22.
+   8.   7.  17.  76.  58.  75.  64.  19.  10.  99.  43.  17.  13. 125.
+  47. 114.  11.   2.  29.  15.  54.  17.  13.  85.   7.  10.   5.  24.
+  59.  12. 165.   3. 167.   8.  19.  12.   1.  11.  13.  62.  11.  16.
+   4.   3.  10.]
+[2025-11-03 22:04:42,938 INFO] lb_select_ulb_dist:
+[117. 290.  91. 139. 263. 256. 166. 401. 126.  96. 246. 273. 163. 179.
+  98. 117.  86. 109. 146. 141. 201.  79.  58.  60.  95. 228.  61.  71.
+ 101.  72. 138.  55. 178. 131. 131.  92. 100.  89.  93. 122. 106.  66.
+  65.  78. 220. 177.  62.  60.  85.  61. 102. 106.  63.  65.  72.  72.
+  58.  57.  67. 126. 108. 125. 114.  69.  60. 149.  93.  67.  63. 175.
+  97. 164.  61.  52.  79.  65. 104.  67.  63. 135.  57.  60.  55.  74.
+ 109.  62. 215.  53. 217.  58.  69.  62.  51.  61.  63. 112.  61.  66.
+  54.  53.  60.]
+[2025-11-03 22:04:43,042 INFO] sampled 29493 images from pool.
+[2025-11-03 22:04:43,119 INFO] 45: Update the labeled data.
+[2025-11-03 22:05:11,393 INFO] 46336 iteration USE_EMA: True, train/sup_loss: 1.3508, train/aux_loss: 0.8389, train/total_loss: 2.1898, train/util_ratio: 0.1629, train/run_time: 0.0751, lr: 0.0291, train/prefecth_time: 0.0152 
+[2025-11-03 22:05:36,757 INFO] 46592 iteration USE_EMA: True, train/sup_loss: 1.4718, train/aux_loss: 1.0427, train/total_loss: 2.5145, train/util_ratio: 0.1629, train/run_time: 0.0708, lr: 0.0291, train/prefecth_time: 0.0074 
+[2025-11-03 22:06:08,239 INFO] 46848 iteration USE_EMA: True, train/sup_loss: 1.1019, train/aux_loss: 0.4741, train/total_loss: 1.5759, train/util_ratio: 0.1138, train/run_time: 0.1500, lr: 0.0291, train/prefecth_time: 0.0126 
+[2025-11-03 22:06:53,817 INFO] validating...
+[2025-11-03 22:06:57,086 INFO] confusion matrix:
+[[0.236 0.012 0.092 ... 0.    0.    0.   ]
+ [0.    0.592 0.    ... 0.    0.    0.008]
+ [0.116 0.008 0.424 ... 0.004 0.    0.   ]
+ ...
+ [0.032 0.076 0.028 ... 0.172 0.    0.004]
+ [0.004 0.012 0.    ... 0.    0.02  0.   ]
+ [0.112 0.024 0.012 ... 0.    0.    0.08 ]]
+[2025-11-03 22:06:57,161 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:06:57,162 INFO] 47104 iteration, USE_EMA: True, train/sup_loss: 1.4039, train/aux_loss: 0.9257, train/total_loss: 2.3296, train/util_ratio: 0.1384, train/run_time: 0.1490, eval/loss: 3.2086, eval/top-1-acc: 0.3257, eval/top-5-acc: 0.5980, eval/balanced_acc: 0.3257, eval/precision: 0.3785, eval/recall: 0.3257, eval/F1: 0.3191, lr: 0.0291, train/prefecth_time: 0.0150 BEST_EVAL_ACC: 0.3264, at 46080 iters
+[2025-11-03 22:07:39,801 INFO] 47360 iteration USE_EMA: True, train/sup_loss: 1.2105, train/aux_loss: 0.6166, train/total_loss: 1.8271, train/util_ratio: 0.1518, train/run_time: 0.0749, lr: 0.0291, train/prefecth_time: 0.0161 
+[2025-11-03 22:08:05,282 INFO] 47616 iteration USE_EMA: True, train/sup_loss: 1.2988, train/aux_loss: 0.8567, train/total_loss: 2.1555, train/util_ratio: 0.1696, train/run_time: 0.0759, lr: 0.0291, train/prefecth_time: 0.0150 
+[2025-11-03 22:08:31,235 INFO] 47872 iteration USE_EMA: True, train/sup_loss: 1.1148, train/aux_loss: 0.4846, train/total_loss: 1.5994, train/util_ratio: 0.1339, train/run_time: 0.0766, lr: 0.0291, train/prefecth_time: 0.0114 
+[2025-11-03 22:08:56,968 INFO] validating...
+[2025-11-03 22:08:59,959 INFO] confusion matrix:
+[[0.22  0.008 0.08  ... 0.004 0.    0.   ]
+ [0.    0.604 0.004 ... 0.    0.    0.008]
+ [0.104 0.008 0.412 ... 0.004 0.    0.   ]
+ ...
+ [0.028 0.068 0.032 ... 0.176 0.    0.008]
+ [0.    0.016 0.004 ... 0.    0.02  0.   ]
+ [0.1   0.024 0.008 ... 0.004 0.    0.092]]
+[2025-11-03 22:09:00,081 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:09:00,143 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:09:00,144 INFO] 48128 iteration, USE_EMA: True, train/sup_loss: 1.2623, train/aux_loss: 0.7847, train/total_loss: 2.0470, train/util_ratio: 0.1317, train/run_time: 0.0759, eval/loss: 3.2137, eval/top-1-acc: 0.3279, eval/top-5-acc: 0.5990, eval/balanced_acc: 0.3279, eval/precision: 0.3798, eval/recall: 0.3279, eval/F1: 0.3208, lr: 0.0290, train/prefecth_time: 0.0092 BEST_EVAL_ACC: 0.3279, at 48128 iters
+[2025-11-03 22:09:30,656 INFO] 48384 iteration USE_EMA: True, train/sup_loss: 1.2405, train/aux_loss: 0.7172, train/total_loss: 1.9576, train/util_ratio: 0.1362, train/run_time: 0.0750, lr: 0.0290, train/prefecth_time: 0.0144 
+[2025-11-03 22:09:55,771 INFO] 48640 iteration USE_EMA: True, train/sup_loss: 1.2241, train/aux_loss: 0.8073, train/total_loss: 2.0313, train/util_ratio: 0.1384, train/run_time: 0.0716, lr: 0.0290, train/prefecth_time: 0.0106 
+[2025-11-03 22:10:21,571 INFO] 48896 iteration USE_EMA: True, train/sup_loss: 1.0743, train/aux_loss: 0.4687, train/total_loss: 1.5430, train/util_ratio: 0.1362, train/run_time: 0.0727, lr: 0.0290, train/prefecth_time: 0.0085 
+[2025-11-03 22:10:47,312 INFO] validating...
+[2025-11-03 22:10:50,042 INFO] confusion matrix:
+[[0.232 0.012 0.076 ... 0.    0.    0.   ]
+ [0.    0.64  0.004 ... 0.    0.    0.008]
+ [0.1   0.008 0.42  ... 0.004 0.    0.   ]
+ ...
+ [0.04  0.056 0.032 ... 0.184 0.    0.004]
+ [0.008 0.012 0.    ... 0.    0.02  0.   ]
+ [0.096 0.024 0.008 ... 0.004 0.    0.084]]
+[2025-11-03 22:10:50,168 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:10:50,227 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:10:50,230 INFO] 49152 iteration, USE_EMA: True, train/sup_loss: 1.0762, train/aux_loss: 0.5431, train/total_loss: 1.6194, train/util_ratio: 0.1696, train/run_time: 0.0710, eval/loss: 3.2241, eval/top-1-acc: 0.3287, eval/top-5-acc: 0.5987, eval/balanced_acc: 0.3287, eval/precision: 0.3810, eval/recall: 0.3287, eval/F1: 0.3211, lr: 0.0290, train/prefecth_time: 0.0068 BEST_EVAL_ACC: 0.3287, at 49152 iters
+[2025-11-03 22:11:21,508 INFO] 49408 iteration USE_EMA: True, train/sup_loss: 1.2305, train/aux_loss: 0.6870, train/total_loss: 1.9175, train/util_ratio: 0.1496, train/run_time: 0.0743, lr: 0.0290, train/prefecth_time: 0.0121 
+[2025-11-03 22:11:47,258 INFO] 49664 iteration USE_EMA: True, train/sup_loss: 1.3401, train/aux_loss: 0.8409, train/total_loss: 2.1809, train/util_ratio: 0.1652, train/run_time: 0.0702, lr: 0.0290, train/prefecth_time: 0.0092 
+[2025-11-03 22:12:12,480 INFO] 49920 iteration USE_EMA: True, train/sup_loss: 1.0068, train/aux_loss: 0.3710, train/total_loss: 1.3778, train/util_ratio: 0.2188, train/run_time: 0.0760, lr: 0.0290, train/prefecth_time: 0.0104 
+[2025-11-03 22:12:38,216 INFO] validating...
+[2025-11-03 22:12:41,031 INFO] confusion matrix:
+[[0.24  0.012 0.08  ... 0.    0.    0.   ]
+ [0.    0.636 0.004 ... 0.    0.    0.008]
+ [0.092 0.008 0.428 ... 0.004 0.    0.   ]
+ ...
+ [0.036 0.064 0.024 ... 0.18  0.    0.004]
+ [0.008 0.016 0.    ... 0.    0.02  0.   ]
+ [0.092 0.028 0.008 ... 0.004 0.    0.084]]
+[2025-11-03 22:12:41,128 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:12:41,177 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:12:41,178 INFO] 50176 iteration, USE_EMA: True, train/sup_loss: 1.1645, train/aux_loss: 0.6441, train/total_loss: 1.8086, train/util_ratio: 0.1406, train/run_time: 0.0745, eval/loss: 3.2224, eval/top-1-acc: 0.3294, eval/top-5-acc: 0.5977, eval/balanced_acc: 0.3294, eval/precision: 0.3821, eval/recall: 0.3294, eval/F1: 0.3218, lr: 0.0290, train/prefecth_time: 0.0106 BEST_EVAL_ACC: 0.3294, at 50176 iters
+[2025-11-03 22:13:10,469 INFO] 50432 iteration USE_EMA: True, train/sup_loss: 1.1515, train/aux_loss: 0.5938, train/total_loss: 1.7454, train/util_ratio: 0.1317, train/run_time: 0.0711, lr: 0.0290, train/prefecth_time: 0.0094 
+[2025-11-03 22:13:36,298 INFO] 50688 iteration USE_EMA: True, train/sup_loss: 1.1649, train/aux_loss: 0.5777, train/total_loss: 1.7426, train/util_ratio: 0.1473, train/run_time: 0.0761, lr: 0.0289, train/prefecth_time: 0.0148 
+[2025-11-03 22:14:02,157 INFO] 50944 iteration USE_EMA: True, train/sup_loss: 0.9995, train/aux_loss: 0.3968, train/total_loss: 1.3962, train/util_ratio: 0.1786, train/run_time: 0.0764, lr: 0.0289, train/prefecth_time: 0.0162 
+[2025-11-03 22:14:27,390 INFO] validating...
+[2025-11-03 22:14:30,355 INFO] confusion matrix:
+[[0.248 0.012 0.084 ... 0.    0.    0.   ]
+ [0.    0.624 0.    ... 0.    0.    0.004]
+ [0.088 0.008 0.436 ... 0.004 0.    0.   ]
+ ...
+ [0.04  0.072 0.032 ... 0.176 0.    0.004]
+ [0.008 0.016 0.    ... 0.    0.016 0.   ]
+ [0.1   0.024 0.008 ... 0.008 0.    0.08 ]]
+[2025-11-03 22:14:30,463 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:14:30,519 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:14:30,520 INFO] 51200 iteration, USE_EMA: True, train/sup_loss: 1.1659, train/aux_loss: 0.6382, train/total_loss: 1.8041, train/util_ratio: 0.1429, train/run_time: 0.0763, eval/loss: 3.2302, eval/top-1-acc: 0.3311, eval/top-5-acc: 0.5969, eval/balanced_acc: 0.3311, eval/precision: 0.3836, eval/recall: 0.3311, eval/F1: 0.3228, lr: 0.0289, train/prefecth_time: 0.0135 BEST_EVAL_ACC: 0.3311, at 51200 iters
+[2025-11-03 22:14:56,772 INFO] select_ulb_dist:
+[ 84. 263.  42.  88. 234. 218. 126. 401.  88.  52. 244. 250. 148. 128.
+  58.  61.  48.  64.  96. 107. 187.  31.   8.   7.  45. 198.  11.  21.
+  52.  24.  96.   6. 130.  80.  82.  39.  57.  43.  42.  88.  61.  17.
+  11.  26. 199. 148.  10.  10.  32.  12.  56.  56.  14.  14.  22.  22.
+  10.   7.  16.  77.  57.  82.  74.  18.  10. 106.  40.  17.  14. 130.
+  44. 137.  14.   3.  25.  12.  64.  12.   9.  85.   7.   8.   2.  22.
+  65.  12. 186.   1. 183.   8.  17.  11.   0.  13.  14.  56.  11.  15.
+   3.   3.   8.]
+[2025-11-03 22:14:56,773 INFO] lb_select_ulb_dist:
+[134. 313.  92. 138. 284. 268. 176. 451. 138. 102. 294. 300. 198. 178.
+ 108. 111.  98. 114. 146. 157. 237.  81.  58.  57.  95. 248.  61.  71.
+ 102.  74. 146.  56. 180. 130. 132.  89. 107.  93.  92. 138. 111.  67.
+  61.  76. 249. 198.  60.  60.  82.  62. 106. 106.  64.  64.  72.  72.
+  60.  57.  66. 127. 107. 132. 124.  68.  60. 156.  90.  67.  64. 180.
+  94. 187.  64.  53.  75.  62. 114.  62.  59. 135.  57.  58.  52.  72.
+ 115.  62. 236.  51. 233.  58.  67.  61.  50.  63.  64. 106.  61.  65.
+  53.  53.  58.]
+[2025-11-03 22:14:56,872 INFO] sampled 34036 images from pool.
+[2025-11-03 22:14:56,948 INFO] 50: Update the labeled data.
+[2025-11-03 22:15:24,652 INFO] 51456 iteration USE_EMA: True, train/sup_loss: 1.3746, train/aux_loss: 0.8738, train/total_loss: 2.2484, train/util_ratio: 0.1272, train/run_time: 0.0711, lr: 0.0289, train/prefecth_time: 0.0094 
+[2025-11-03 22:15:50,001 INFO] 51712 iteration USE_EMA: True, train/sup_loss: 1.0895, train/aux_loss: 0.5763, train/total_loss: 1.6658, train/util_ratio: 0.1362, train/run_time: 0.0746, lr: 0.0289, train/prefecth_time: 0.0145 
+[2025-11-03 22:16:15,684 INFO] 51968 iteration USE_EMA: True, train/sup_loss: 1.2492, train/aux_loss: 0.6534, train/total_loss: 1.9025, train/util_ratio: 0.1496, train/run_time: 0.0715, lr: 0.0289, train/prefecth_time: 0.0076 
+[2025-11-03 22:16:41,312 INFO] validating...
+[2025-11-03 22:16:44,226 INFO] confusion matrix:
+[[0.24  0.012 0.08  ... 0.004 0.    0.   ]
+ [0.    0.632 0.004 ... 0.    0.    0.008]
+ [0.084 0.008 0.428 ... 0.004 0.    0.   ]
+ ...
+ [0.044 0.076 0.036 ... 0.172 0.    0.004]
+ [0.004 0.016 0.    ... 0.    0.012 0.   ]
+ [0.1   0.028 0.008 ... 0.004 0.    0.08 ]]
+[2025-11-03 22:16:44,337 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:16:44,338 INFO] 52224 iteration, USE_EMA: True, train/sup_loss: 1.2490, train/aux_loss: 0.7495, train/total_loss: 1.9985, train/util_ratio: 0.1384, train/run_time: 0.0755, eval/loss: 3.2189, eval/top-1-acc: 0.3297, eval/top-5-acc: 0.6001, eval/balanced_acc: 0.3297, eval/precision: 0.3891, eval/recall: 0.3297, eval/F1: 0.3220, lr: 0.0289, train/prefecth_time: 0.0132 BEST_EVAL_ACC: 0.3311, at 51200 iters
+[2025-11-03 22:17:13,945 INFO] 52480 iteration USE_EMA: True, train/sup_loss: 1.2885, train/aux_loss: 0.8409, train/total_loss: 2.1294, train/util_ratio: 0.1964, train/run_time: 0.0697, lr: 0.0289, train/prefecth_time: 0.0099 
+[2025-11-03 22:17:37,877 INFO] 52736 iteration USE_EMA: True, train/sup_loss: 1.1310, train/aux_loss: 0.6409, train/total_loss: 1.7719, train/util_ratio: 0.1719, train/run_time: 0.0709, lr: 0.0289, train/prefecth_time: 0.0101 
+[2025-11-03 22:18:02,063 INFO] 52992 iteration USE_EMA: True, train/sup_loss: 1.1186, train/aux_loss: 0.5456, train/total_loss: 1.6642, train/util_ratio: 0.1473, train/run_time: 0.0717, lr: 0.0288, train/prefecth_time: 0.0079 
+[2025-11-03 22:18:26,235 INFO] validating...
+[2025-11-03 22:18:28,527 INFO] confusion matrix:
+[[0.252 0.012 0.08  ... 0.    0.    0.   ]
+ [0.    0.632 0.    ... 0.    0.    0.004]
+ [0.096 0.008 0.436 ... 0.004 0.    0.   ]
+ ...
+ [0.044 0.06  0.036 ... 0.18  0.    0.008]
+ [0.    0.012 0.    ... 0.    0.012 0.   ]
+ [0.1   0.024 0.008 ... 0.004 0.    0.1  ]]
+[2025-11-03 22:18:28,603 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:18:28,604 INFO] 53248 iteration, USE_EMA: True, train/sup_loss: 1.0839, train/aux_loss: 0.5367, train/total_loss: 1.6207, train/util_ratio: 0.1607, train/run_time: 0.0714, eval/loss: 3.2250, eval/top-1-acc: 0.3302, eval/top-5-acc: 0.6009, eval/balanced_acc: 0.3302, eval/precision: 0.3916, eval/recall: 0.3302, eval/F1: 0.3224, lr: 0.0288, train/prefecth_time: 0.0063 BEST_EVAL_ACC: 0.3311, at 51200 iters
+[2025-11-03 22:19:09,575 INFO] 53504 iteration USE_EMA: True, train/sup_loss: 1.2774, train/aux_loss: 0.7909, train/total_loss: 2.0683, train/util_ratio: 0.1585, train/run_time: 0.1645, lr: 0.0288, train/prefecth_time: 0.0108 
+[2025-11-03 22:19:38,910 INFO] 53760 iteration USE_EMA: True, train/sup_loss: 1.1802, train/aux_loss: 0.7004, train/total_loss: 1.8806, train/util_ratio: 0.1562, train/run_time: 0.0695, lr: 0.0288, train/prefecth_time: 0.0118 
+[2025-11-03 22:20:10,695 INFO] 54016 iteration USE_EMA: True, train/sup_loss: 1.1262, train/aux_loss: 0.5172, train/total_loss: 1.6433, train/util_ratio: 0.1964, train/run_time: 0.1005, lr: 0.0288, train/prefecth_time: 0.0087 
+[2025-11-03 22:20:41,509 INFO] validating...
+[2025-11-03 22:20:44,188 INFO] confusion matrix:
+[[0.24  0.012 0.096 ... 0.    0.    0.   ]
+ [0.004 0.612 0.    ... 0.    0.    0.   ]
+ [0.1   0.008 0.444 ... 0.004 0.    0.   ]
+ ...
+ [0.04  0.076 0.032 ... 0.16  0.    0.004]
+ [0.    0.012 0.    ... 0.    0.02  0.   ]
+ [0.096 0.024 0.016 ... 0.004 0.    0.112]]
+[2025-11-03 22:20:44,266 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:20:44,267 INFO] 54272 iteration, USE_EMA: True, train/sup_loss: 1.1968, train/aux_loss: 0.6911, train/total_loss: 1.8879, train/util_ratio: 0.1161, train/run_time: 0.0717, eval/loss: 3.2221, eval/top-1-acc: 0.3299, eval/top-5-acc: 0.6017, eval/balanced_acc: 0.3299, eval/precision: 0.3919, eval/recall: 0.3299, eval/F1: 0.3221, lr: 0.0288, train/prefecth_time: 0.0090 BEST_EVAL_ACC: 0.3311, at 51200 iters
+[2025-11-03 22:21:28,596 INFO] 54528 iteration USE_EMA: True, train/sup_loss: 1.1524, train/aux_loss: 0.5886, train/total_loss: 1.7410, train/util_ratio: 0.1674, train/run_time: 0.0713, lr: 0.0288, train/prefecth_time: 0.0103 
+[2025-11-03 22:22:05,865 INFO] 54784 iteration USE_EMA: True, train/sup_loss: 1.1036, train/aux_loss: 0.5257, train/total_loss: 1.6293, train/util_ratio: 0.1786, train/run_time: 0.1524, lr: 0.0288, train/prefecth_time: 0.0106 
+[2025-11-03 22:22:37,046 INFO] 55040 iteration USE_EMA: True, train/sup_loss: 1.0928, train/aux_loss: 0.4765, train/total_loss: 1.5693, train/util_ratio: 0.1830, train/run_time: 0.0707, lr: 0.0288, train/prefecth_time: 0.0122 
+[2025-11-03 22:23:11,308 INFO] validating...
+[2025-11-03 22:23:14,137 INFO] confusion matrix:
+[[0.252 0.012 0.08  ... 0.    0.    0.   ]
+ [0.    0.6   0.    ... 0.    0.    0.   ]
+ [0.112 0.008 0.412 ... 0.004 0.    0.   ]
+ ...
+ [0.028 0.068 0.024 ... 0.176 0.    0.004]
+ [0.    0.012 0.    ... 0.    0.024 0.   ]
+ [0.1   0.02  0.008 ... 0.004 0.    0.108]]
+[2025-11-03 22:23:14,216 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:23:14,265 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:23:14,266 INFO] 55296 iteration, USE_EMA: True, train/sup_loss: 1.1467, train/aux_loss: 0.6524, train/total_loss: 1.7990, train/util_ratio: 0.1406, train/run_time: 0.0710, eval/loss: 3.2203, eval/top-1-acc: 0.3315, eval/top-5-acc: 0.5997, eval/balanced_acc: 0.3315, eval/precision: 0.3937, eval/recall: 0.3315, eval/F1: 0.3239, lr: 0.0287, train/prefecth_time: 0.0071 BEST_EVAL_ACC: 0.3315, at 55296 iters
+[2025-11-03 22:23:49,084 INFO] 55552 iteration USE_EMA: True, train/sup_loss: 1.0857, train/aux_loss: 0.5965, train/total_loss: 1.6822, train/util_ratio: 0.1696, train/run_time: 0.0708, lr: 0.0287, train/prefecth_time: 0.0056 
+[2025-11-03 22:24:17,885 INFO] 55808 iteration USE_EMA: True, train/sup_loss: 0.9900, train/aux_loss: 0.5239, train/total_loss: 1.5139, train/util_ratio: 0.1696, train/run_time: 0.0724, lr: 0.0287, train/prefecth_time: 0.0091 
+[2025-11-03 22:24:48,705 INFO] 56064 iteration USE_EMA: True, train/sup_loss: 1.0579, train/aux_loss: 0.4193, train/total_loss: 1.4772, train/util_ratio: 0.2009, train/run_time: 0.1556, lr: 0.0287, train/prefecth_time: 0.0079 
+[2025-11-03 22:25:19,296 INFO] validating...
+[2025-11-03 22:25:21,595 INFO] confusion matrix:
+[[0.232 0.012 0.096 ... 0.    0.    0.004]
+ [0.    0.592 0.    ... 0.    0.    0.004]
+ [0.076 0.008 0.444 ... 0.004 0.    0.   ]
+ ...
+ [0.032 0.064 0.024 ... 0.18  0.    0.004]
+ [0.    0.016 0.    ... 0.    0.028 0.   ]
+ [0.108 0.016 0.008 ... 0.004 0.    0.1  ]]
+[2025-11-03 22:25:21,670 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:25:21,670 INFO] 56320 iteration, USE_EMA: True, train/sup_loss: 1.1137, train/aux_loss: 0.6434, train/total_loss: 1.7572, train/util_ratio: 0.1607, train/run_time: 0.1290, eval/loss: 3.2373, eval/top-1-acc: 0.3308, eval/top-5-acc: 0.5997, eval/balanced_acc: 0.3308, eval/precision: 0.3928, eval/recall: 0.3308, eval/F1: 0.3229, lr: 0.0287, train/prefecth_time: 0.0098 BEST_EVAL_ACC: 0.3315, at 55296 iters
+[2025-11-03 22:25:49,802 INFO] select_ulb_dist:
+[102. 293.  46.  92. 259. 237. 130. 469.  99.  56. 282. 263. 176. 115.
+  57.  53.  43.  61. 105. 120. 212.  32.   8.   8.  48. 223.   9.  21.
+  49.  24. 104.   5. 127.  74.  85.  39.  59.  42.  40. 100.  62.  16.
+  13.  21. 230. 161.   8.  12.  28.  14.  63.  57.  10.  15.  21.  22.
+   8.   6.  17.  81.  60.  87.  78.  20.   7. 114.  34.  22.  14. 133.
+  40. 158.  15.   2.  24.  13.  64.  13.   7.  86.   7.   8.   3.  19.
+  66.  13. 194.   1. 195.   6.  17.  10.   1.  12.  16.  51.   8.  12.
+   3.   1.   9.]
+[2025-11-03 22:25:49,803 INFO] lb_select_ulb_dist:
+[152. 343.  96. 142. 309. 287. 180. 519. 149. 106. 332. 313. 226. 165.
+ 107. 103.  93. 111. 155. 170. 262.  82.  58.  58.  98. 273.  59.  71.
+  99.  74. 154.  55. 177. 124. 135.  89. 109.  92.  90. 150. 112.  66.
+  63.  71. 280. 211.  58.  62.  78.  64. 113. 107.  60.  65.  71.  72.
+  58.  56.  67. 131. 110. 137. 128.  70.  57. 164.  84.  72.  64. 183.
+  90. 208.  65.  52.  74.  63. 114.  63.  57. 136.  57.  58.  53.  69.
+ 116.  63. 244.  51. 245.  56.  67.  60.  51.  62.  66. 101.  58.  62.
+  53.  51.  59.]
+[2025-11-03 22:25:49,924 INFO] sampled 40494 images from pool.
+[2025-11-03 22:25:50,022 INFO] 55: Update the labeled data.
+[2025-11-03 22:26:28,149 INFO] 56576 iteration USE_EMA: True, train/sup_loss: 1.3019, train/aux_loss: 0.7699, train/total_loss: 2.0718, train/util_ratio: 0.1317, train/run_time: 0.1599, lr: 0.0287, train/prefecth_time: 0.0087 
+[2025-11-03 22:27:03,041 INFO] 56832 iteration USE_EMA: True, train/sup_loss: 1.2984, train/aux_loss: 0.7550, train/total_loss: 2.0535, train/util_ratio: 0.1295, train/run_time: 0.0723, lr: 0.0287, train/prefecth_time: 0.0088 
+[2025-11-03 22:27:38,223 INFO] 57088 iteration USE_EMA: True, train/sup_loss: 1.3720, train/aux_loss: 0.9252, train/total_loss: 2.2972, train/util_ratio: 0.1540, train/run_time: 0.1616, lr: 0.0287, train/prefecth_time: 0.0157 
+[2025-11-03 22:28:13,806 INFO] validating...
+[2025-11-03 22:28:15,958 INFO] confusion matrix:
+[[0.256 0.012 0.096 ... 0.    0.    0.004]
+ [0.    0.592 0.    ... 0.    0.    0.   ]
+ [0.088 0.008 0.468 ... 0.004 0.    0.   ]
+ ...
+ [0.044 0.06  0.032 ... 0.192 0.    0.004]
+ [0.    0.012 0.    ... 0.    0.024 0.   ]
+ [0.112 0.016 0.008 ... 0.004 0.    0.104]]
+[2025-11-03 22:28:16,023 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:28:16,024 INFO] 57344 iteration, USE_EMA: True, train/sup_loss: 1.1698, train/aux_loss: 0.5852, train/total_loss: 1.7550, train/util_ratio: 0.1496, train/run_time: 0.0723, eval/loss: 3.2188, eval/top-1-acc: 0.3309, eval/top-5-acc: 0.6029, eval/balanced_acc: 0.3309, eval/precision: 0.3962, eval/recall: 0.3309, eval/F1: 0.3231, lr: 0.0287, train/prefecth_time: 0.0109 BEST_EVAL_ACC: 0.3315, at 55296 iters
+[2025-11-03 22:28:52,025 INFO] 57600 iteration USE_EMA: True, train/sup_loss: 1.2544, train/aux_loss: 0.7796, train/total_loss: 2.0340, train/util_ratio: 0.1942, train/run_time: 0.1398, lr: 0.0286, train/prefecth_time: 0.0114 
+[2025-11-03 22:29:26,533 INFO] 57856 iteration USE_EMA: True, train/sup_loss: 1.1124, train/aux_loss: 0.4951, train/total_loss: 1.6075, train/util_ratio: 0.1987, train/run_time: 0.0719, lr: 0.0286, train/prefecth_time: 0.0116 
+[2025-11-03 22:30:01,155 INFO] 58112 iteration USE_EMA: True, train/sup_loss: 1.2870, train/aux_loss: 0.8054, train/total_loss: 2.0924, train/util_ratio: 0.1518, train/run_time: 0.1524, lr: 0.0286, train/prefecth_time: 0.0071 
+[2025-11-03 22:30:28,435 INFO] validating...
+[2025-11-03 22:30:30,874 INFO] confusion matrix:
+[[0.232 0.008 0.088 ... 0.    0.    0.004]
+ [0.    0.572 0.    ... 0.    0.    0.   ]
+ [0.084 0.008 0.476 ... 0.004 0.    0.   ]
+ ...
+ [0.032 0.072 0.028 ... 0.168 0.    0.   ]
+ [0.    0.012 0.    ... 0.    0.02  0.   ]
+ [0.096 0.028 0.008 ... 0.004 0.    0.12 ]]
+[2025-11-03 22:30:30,957 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:30:31,007 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:30:31,008 INFO] 58368 iteration, USE_EMA: True, train/sup_loss: 1.0937, train/aux_loss: 0.4229, train/total_loss: 1.5166, train/util_ratio: 0.1786, train/run_time: 0.1570, eval/loss: 3.2166, eval/top-1-acc: 0.3320, eval/top-5-acc: 0.6044, eval/balanced_acc: 0.3320, eval/precision: 0.3982, eval/recall: 0.3320, eval/F1: 0.3245, lr: 0.0286, train/prefecth_time: 0.0098 BEST_EVAL_ACC: 0.3320, at 58368 iters
+[2025-11-03 22:31:04,363 INFO] 58624 iteration USE_EMA: True, train/sup_loss: 1.1596, train/aux_loss: 0.5464, train/total_loss: 1.7060, train/util_ratio: 0.1540, train/run_time: 0.1512, lr: 0.0286, train/prefecth_time: 0.0077 
+[2025-11-03 22:31:33,671 INFO] 58880 iteration USE_EMA: True, train/sup_loss: 1.1957, train/aux_loss: 0.5945, train/total_loss: 1.7902, train/util_ratio: 0.1830, train/run_time: 0.1535, lr: 0.0286, train/prefecth_time: 0.0150 
+[2025-11-03 22:32:03,859 INFO] 59136 iteration USE_EMA: True, train/sup_loss: 1.3756, train/aux_loss: 0.8406, train/total_loss: 2.2161, train/util_ratio: 0.1741, train/run_time: 0.1541, lr: 0.0286, train/prefecth_time: 0.0111 
+[2025-11-03 22:32:33,863 INFO] validating...
+[2025-11-03 22:32:36,447 INFO] confusion matrix:
+[[0.232 0.012 0.088 ... 0.    0.    0.004]
+ [0.    0.572 0.    ... 0.    0.    0.004]
+ [0.084 0.008 0.46  ... 0.004 0.    0.   ]
+ ...
+ [0.032 0.06  0.028 ... 0.156 0.    0.   ]
+ [0.    0.012 0.004 ... 0.    0.016 0.   ]
+ [0.1   0.032 0.008 ... 0.004 0.    0.108]]
+[2025-11-03 22:32:36,522 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:32:36,571 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:32:36,572 INFO] 59392 iteration, USE_EMA: True, train/sup_loss: 1.1620, train/aux_loss: 0.5198, train/total_loss: 1.6818, train/util_ratio: 0.1585, train/run_time: 0.0698, eval/loss: 3.2371, eval/top-1-acc: 0.3329, eval/top-5-acc: 0.6017, eval/balanced_acc: 0.3329, eval/precision: 0.3999, eval/recall: 0.3329, eval/F1: 0.3255, lr: 0.0286, train/prefecth_time: 0.0056 BEST_EVAL_ACC: 0.3329, at 59392 iters
+[2025-11-03 22:33:09,900 INFO] 59648 iteration USE_EMA: True, train/sup_loss: 1.1339, train/aux_loss: 0.5304, train/total_loss: 1.6644, train/util_ratio: 0.1585, train/run_time: 0.1382, lr: 0.0285, train/prefecth_time: 0.0137 
+[2025-11-03 22:33:54,803 INFO] 59904 iteration USE_EMA: True, train/sup_loss: 1.1114, train/aux_loss: 0.4948, train/total_loss: 1.6062, train/util_ratio: 0.1741, train/run_time: 0.1550, lr: 0.0285, train/prefecth_time: 0.0073 
+[2025-11-03 22:34:28,571 INFO] 60160 iteration USE_EMA: True, train/sup_loss: 1.3069, train/aux_loss: 0.7962, train/total_loss: 2.1032, train/util_ratio: 0.1763, train/run_time: 0.1222, lr: 0.0285, train/prefecth_time: 0.0066 
+[2025-11-03 22:35:10,883 INFO] validating...
+[2025-11-03 22:35:13,371 INFO] confusion matrix:
+[[0.26  0.012 0.064 ... 0.    0.    0.004]
+ [0.    0.56  0.    ... 0.    0.    0.004]
+ [0.076 0.008 0.468 ... 0.004 0.    0.   ]
+ ...
+ [0.04  0.06  0.032 ... 0.16  0.    0.   ]
+ [0.004 0.012 0.004 ... 0.    0.02  0.   ]
+ [0.096 0.028 0.008 ... 0.004 0.    0.12 ]]
+[2025-11-03 22:35:13,445 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:35:13,493 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/model_best.pth
+[2025-11-03 22:35:13,494 INFO] 60416 iteration, USE_EMA: True, train/sup_loss: 1.1211, train/aux_loss: 0.5509, train/total_loss: 1.6720, train/util_ratio: 0.1920, train/run_time: 0.1533, eval/loss: 3.2298, eval/top-1-acc: 0.3353, eval/top-5-acc: 0.6013, eval/balanced_acc: 0.3353, eval/precision: 0.4016, eval/recall: 0.3353, eval/F1: 0.3277, lr: 0.0285, train/prefecth_time: 0.0107 BEST_EVAL_ACC: 0.3353, at 60416 iters
+[2025-11-03 22:35:49,147 INFO] 60672 iteration USE_EMA: True, train/sup_loss: 1.1275, train/aux_loss: 0.5663, train/total_loss: 1.6938, train/util_ratio: 0.1562, train/run_time: 0.0724, lr: 0.0285, train/prefecth_time: 0.0124 
+[2025-11-03 22:36:20,663 INFO] 60928 iteration USE_EMA: True, train/sup_loss: 1.1409, train/aux_loss: 0.5212, train/total_loss: 1.6621, train/util_ratio: 0.1674, train/run_time: 0.0742, lr: 0.0285, train/prefecth_time: 0.0128 
+[2025-11-03 22:36:49,341 INFO] 61184 iteration USE_EMA: True, train/sup_loss: 1.2505, train/aux_loss: 0.6549, train/total_loss: 1.9054, train/util_ratio: 0.2165, train/run_time: 0.0717, lr: 0.0285, train/prefecth_time: 0.0109 
+[2025-11-03 22:37:17,196 INFO] validating...
+[2025-11-03 22:37:19,614 INFO] confusion matrix:
+[[0.244 0.012 0.072 ... 0.    0.    0.   ]
+ [0.    0.58  0.    ... 0.    0.    0.   ]
+ [0.068 0.008 0.496 ... 0.004 0.    0.   ]
+ ...
+ [0.032 0.072 0.036 ... 0.164 0.    0.004]
+ [0.004 0.016 0.004 ... 0.    0.016 0.   ]
+ [0.104 0.036 0.008 ... 0.004 0.    0.116]]
+[2025-11-03 22:37:19,723 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:37:19,724 INFO] 61440 iteration, USE_EMA: True, train/sup_loss: 1.0885, train/aux_loss: 0.4222, train/total_loss: 1.5107, train/util_ratio: 0.2031, train/run_time: 0.0703, eval/loss: 3.2305, eval/top-1-acc: 0.3332, eval/top-5-acc: 0.6012, eval/balanced_acc: 0.3332, eval/precision: 0.3994, eval/recall: 0.3332, eval/F1: 0.3254, lr: 0.0285, train/prefecth_time: 0.0059 BEST_EVAL_ACC: 0.3353, at 60416 iters
+[2025-11-03 22:37:49,641 INFO] select_ulb_dist:
+[113. 304.  44.  88. 279. 247. 134. 509. 100.  48. 317. 277. 194.  98.
+  59.  43.  39.  62. 112. 129. 243.  34.  11.   5.  49. 228.   8.  19.
+  47.  19. 111.   6. 132.  67.  88.  37.  61.  39.  37. 111.  59.  15.
+  13.  18. 249. 167.   5.  10.  25.  15.  61.  55.  11.  15.  18.  21.
+   9.   5.  16.  87.  60.  90.  79.  21.   6. 111.  29.  23.  13. 129.
+  31. 179.  14.   2.  19.   8.  59.  12.   7.  87.   7.   6.   2.  23.
+  58.  13. 201.   2. 202.   5.  19.   7.   1.   9.  11.  47.   4.  11.
+   4.   1.  10.]
+[2025-11-03 22:37:49,642 INFO] lb_select_ulb_dist:
+[163. 354.  94. 138. 329. 297. 184. 559. 150.  98. 367. 327. 244. 148.
+ 109.  93.  89. 112. 162. 179. 293.  84.  61.  55.  99. 278.  58.  69.
+  97.  69. 161.  56. 182. 117. 138.  87. 111.  89.  87. 161. 109.  65.
+  63.  68. 299. 217.  55.  60.  75.  65. 111. 105.  61.  65.  68.  71.
+  59.  55.  66. 137. 110. 140. 129.  71.  56. 161.  79.  73.  63. 179.
+  81. 229.  64.  52.  69.  58. 109.  62.  57. 137.  57.  56.  52.  73.
+ 108.  63. 251.  52. 252.  55.  69.  57.  51.  59.  61.  97.  54.  61.
+  54.  51.  60.]
+[2025-11-03 22:37:49,827 INFO] sampled 44365 images from pool.
+[2025-11-03 22:37:49,989 INFO] 60: Update the labeled data.
+[2025-11-03 22:38:22,268 INFO] 61696 iteration USE_EMA: True, train/sup_loss: 1.2688, train/aux_loss: 0.6364, train/total_loss: 1.9052, train/util_ratio: 0.1562, train/run_time: 0.0752, lr: 0.0284, train/prefecth_time: 0.0156 
+[2025-11-03 22:38:48,254 INFO] 61952 iteration USE_EMA: True, train/sup_loss: 1.3226, train/aux_loss: 0.8238, train/total_loss: 2.1464, train/util_ratio: 0.1607, train/run_time: 0.0759, lr: 0.0284, train/prefecth_time: 0.0142 
+[2025-11-03 22:39:12,531 INFO] 62208 iteration USE_EMA: True, train/sup_loss: 1.3980, train/aux_loss: 0.8896, train/total_loss: 2.2876, train/util_ratio: 0.1540, train/run_time: 0.0714, lr: 0.0284, train/prefecth_time: 0.0124 
+[2025-11-03 22:39:36,244 INFO] validating...
+[2025-11-03 22:39:38,679 INFO] confusion matrix:
+[[0.224 0.012 0.092 ... 0.    0.    0.   ]
+ [0.    0.604 0.    ... 0.    0.    0.004]
+ [0.064 0.008 0.476 ... 0.004 0.    0.   ]
+ ...
+ [0.036 0.068 0.032 ... 0.164 0.    0.   ]
+ [0.004 0.024 0.    ... 0.    0.012 0.   ]
+ [0.104 0.044 0.012 ... 0.004 0.    0.12 ]]
+[2025-11-03 22:39:38,795 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:39:38,796 INFO] 62464 iteration, USE_EMA: True, train/sup_loss: 1.0994, train/aux_loss: 0.4323, train/total_loss: 1.5317, train/util_ratio: 0.1741, train/run_time: 0.0725, eval/loss: 3.2368, eval/top-1-acc: 0.3324, eval/top-5-acc: 0.6016, eval/balanced_acc: 0.3324, eval/precision: 0.4038, eval/recall: 0.3324, eval/F1: 0.3257, lr: 0.0284, train/prefecth_time: 0.0103 BEST_EVAL_ACC: 0.3353, at 60416 iters
+[2025-11-03 22:40:05,973 INFO] 62720 iteration USE_EMA: True, train/sup_loss: 1.1458, train/aux_loss: 0.5668, train/total_loss: 1.7127, train/util_ratio: 0.1875, train/run_time: 0.0711, lr: 0.0284, train/prefecth_time: 0.0113 
+[2025-11-03 22:40:29,124 INFO] 62976 iteration USE_EMA: True, train/sup_loss: 1.3268, train/aux_loss: 0.7677, train/total_loss: 2.0946, train/util_ratio: 0.1384, train/run_time: 0.0709, lr: 0.0284, train/prefecth_time: 0.0074 
+[2025-11-03 22:40:52,532 INFO] 63232 iteration USE_EMA: True, train/sup_loss: 1.2938, train/aux_loss: 0.7702, train/total_loss: 2.0640, train/util_ratio: 0.1830, train/run_time: 0.0705, lr: 0.0284, train/prefecth_time: 0.0099 
+[2025-11-03 22:41:16,571 INFO] validating...
+[2025-11-03 22:41:19,257 INFO] confusion matrix:
+[[0.212 0.012 0.1   ... 0.    0.    0.   ]
+ [0.    0.62  0.    ... 0.    0.    0.004]
+ [0.072 0.008 0.5   ... 0.004 0.    0.   ]
+ ...
+ [0.032 0.072 0.04  ... 0.156 0.    0.004]
+ [0.004 0.02  0.    ... 0.    0.012 0.   ]
+ [0.116 0.04  0.008 ... 0.004 0.    0.104]]
+[2025-11-03 22:41:19,335 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:41:19,336 INFO] 63488 iteration, USE_EMA: True, train/sup_loss: 0.9991, train/aux_loss: 0.3231, train/total_loss: 1.3222, train/util_ratio: 0.2098, train/run_time: 0.0697, eval/loss: 3.2467, eval/top-1-acc: 0.3317, eval/top-5-acc: 0.6000, eval/balanced_acc: 0.3317, eval/precision: 0.4044, eval/recall: 0.3317, eval/F1: 0.3244, lr: 0.0284, train/prefecth_time: 0.0069 BEST_EVAL_ACC: 0.3353, at 60416 iters
+[2025-11-03 22:41:54,572 INFO] 63744 iteration USE_EMA: True, train/sup_loss: 1.1108, train/aux_loss: 0.4844, train/total_loss: 1.5952, train/util_ratio: 0.1585, train/run_time: 0.0709, lr: 0.0283, train/prefecth_time: 0.0074 
+[2025-11-03 22:42:23,163 INFO] 64000 iteration USE_EMA: True, train/sup_loss: 1.2462, train/aux_loss: 0.6474, train/total_loss: 1.8936, train/util_ratio: 0.1429, train/run_time: 0.0693, lr: 0.0283, train/prefecth_time: 0.0132 
+[2025-11-03 22:42:50,706 INFO] 64256 iteration USE_EMA: True, train/sup_loss: 1.3987, train/aux_loss: 0.9698, train/total_loss: 2.3685, train/util_ratio: 0.1741, train/run_time: 0.0716, lr: 0.0283, train/prefecth_time: 0.0125 
+[2025-11-03 22:43:22,511 INFO] validating...
+[2025-11-03 22:43:24,976 INFO] confusion matrix:
+[[0.204 0.016 0.088 ... 0.    0.    0.   ]
+ [0.    0.632 0.    ... 0.    0.    0.   ]
+ [0.076 0.008 0.46  ... 0.004 0.    0.   ]
+ ...
+ [0.032 0.068 0.028 ... 0.16  0.    0.004]
+ [0.004 0.024 0.    ... 0.    0.012 0.   ]
+ [0.108 0.036 0.012 ... 0.008 0.    0.092]]
+[2025-11-03 22:43:25,051 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:43:25,052 INFO] 64512 iteration, USE_EMA: True, train/sup_loss: 1.0576, train/aux_loss: 0.4897, train/total_loss: 1.5473, train/util_ratio: 0.1295, train/run_time: 0.0711, eval/loss: 3.2644, eval/top-1-acc: 0.3299, eval/top-5-acc: 0.6009, eval/balanced_acc: 0.3299, eval/precision: 0.4042, eval/recall: 0.3299, eval/F1: 0.3226, lr: 0.0283, train/prefecth_time: 0.0073 BEST_EVAL_ACC: 0.3353, at 60416 iters
+[2025-11-03 22:43:59,065 INFO] 64768 iteration USE_EMA: True, train/sup_loss: 1.0564, train/aux_loss: 0.4281, train/total_loss: 1.4844, train/util_ratio: 0.1763, train/run_time: 0.0711, lr: 0.0283, train/prefecth_time: 0.0083 
+[2025-11-03 22:44:22,794 INFO] 65024 iteration USE_EMA: True, train/sup_loss: 1.2073, train/aux_loss: 0.6215, train/total_loss: 1.8288, train/util_ratio: 0.1518, train/run_time: 0.0704, lr: 0.0283, train/prefecth_time: 0.0055 
+[2025-11-03 22:44:46,575 INFO] 65280 iteration USE_EMA: True, train/sup_loss: 1.2607, train/aux_loss: 0.7325, train/total_loss: 1.9932, train/util_ratio: 0.1875, train/run_time: 0.0710, lr: 0.0283, train/prefecth_time: 0.0101 
+[2025-11-03 22:45:10,104 INFO] validating...
+[2025-11-03 22:45:12,624 INFO] confusion matrix:
+[[0.224 0.012 0.084 ... 0.    0.    0.   ]
+ [0.    0.604 0.    ... 0.    0.    0.004]
+ [0.088 0.008 0.464 ... 0.004 0.    0.   ]
+ ...
+ [0.036 0.064 0.024 ... 0.148 0.    0.004]
+ [0.004 0.02  0.    ... 0.    0.008 0.   ]
+ [0.112 0.036 0.008 ... 0.004 0.    0.092]]
+[2025-11-03 22:45:12,711 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:45:12,712 INFO] 65536 iteration, USE_EMA: True, train/sup_loss: 1.0088, train/aux_loss: 0.4441, train/total_loss: 1.4529, train/util_ratio: 0.1741, train/run_time: 0.0718, eval/loss: 3.2457, eval/top-1-acc: 0.3301, eval/top-5-acc: 0.6018, eval/balanced_acc: 0.3301, eval/precision: 0.4026, eval/recall: 0.3301, eval/F1: 0.3228, lr: 0.0282, train/prefecth_time: 0.0092 BEST_EVAL_ACC: 0.3353, at 60416 iters
+[2025-11-03 22:45:40,301 INFO] 65792 iteration USE_EMA: True, train/sup_loss: 1.1329, train/aux_loss: 0.4565, train/total_loss: 1.5894, train/util_ratio: 0.1786, train/run_time: 0.0718, lr: 0.0282, train/prefecth_time: 0.0123 
+[2025-11-03 22:46:04,007 INFO] 66048 iteration USE_EMA: True, train/sup_loss: 1.2211, train/aux_loss: 0.6243, train/total_loss: 1.8453, train/util_ratio: 0.1875, train/run_time: 0.0695, lr: 0.0282, train/prefecth_time: 0.0108 
+[2025-11-03 22:46:33,255 INFO] 66304 iteration USE_EMA: True, train/sup_loss: 1.3466, train/aux_loss: 0.9463, train/total_loss: 2.2929, train/util_ratio: 0.1562, train/run_time: 0.1572, lr: 0.0282, train/prefecth_time: 0.0090 
+[2025-11-03 22:47:14,718 INFO] validating...
+[2025-11-03 22:47:17,694 INFO] confusion matrix:
+[[0.24  0.016 0.084 ... 0.    0.    0.   ]
+ [0.    0.612 0.    ... 0.    0.    0.004]
+ [0.084 0.008 0.452 ... 0.004 0.    0.   ]
+ ...
+ [0.036 0.068 0.024 ... 0.148 0.    0.004]
+ [0.    0.02  0.    ... 0.    0.008 0.   ]
+ [0.1   0.028 0.008 ... 0.004 0.    0.104]]
+[2025-11-03 22:47:17,772 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:47:17,773 INFO] 66560 iteration, USE_EMA: True, train/sup_loss: 0.9990, train/aux_loss: 0.3328, train/total_loss: 1.3318, train/util_ratio: 0.2009, train/run_time: 0.1662, eval/loss: 3.2522, eval/top-1-acc: 0.3303, eval/top-5-acc: 0.6016, eval/balanced_acc: 0.3303, eval/precision: 0.4057, eval/recall: 0.3303, eval/F1: 0.3233, lr: 0.0282, train/prefecth_time: 0.0067 BEST_EVAL_ACC: 0.3353, at 60416 iters
+[2025-11-03 22:47:48,556 INFO] select_ulb_dist:
+[115. 326.  44.  87. 294. 264. 133. 538. 108.  47. 353. 286. 230.  89.
+  60.  33.  46.  60. 108. 146. 246.  36.  11.   4.  46. 240.   5.  19.
+  42.  23. 122.   5. 127.  64.  87.  34.  60.  40.  33. 124.  58.  15.
+  12.  17. 267. 169.   5.  10.  23.  15.  62.  53.   8.  18.  17.  20.
+   6.   5.  13.  89.  62.  91.  87.  22.   6. 116.  24.  22.  15. 129.
+  25. 177.  12.   0.  16.   8.  59.  13.   8.  87.   7.   8.   3.  21.
+  53.  12. 208.   1. 209.   3.  21.   9.   0.   6.  12.  41.   4.   8.
+   4.   2.   7.]
+[2025-11-03 22:47:48,557 INFO] lb_select_ulb_dist:
+[165. 376.  94. 137. 344. 314. 183. 588. 158.  97. 403. 336. 280. 139.
+ 110.  83.  96. 110. 158. 196. 296.  86.  61.  54.  96. 290.  55.  69.
+  92.  73. 172.  55. 177. 114. 137.  84. 110.  90.  83. 174. 108.  65.
+  62.  67. 317. 219.  55.  60.  73.  65. 112. 103.  58.  68.  67.  70.
+  56.  55.  63. 139. 112. 141. 137.  72.  56. 166.  74.  72.  65. 179.
+  75. 227.  62.  50.  66.  58. 109.  63.  58. 137.  57.  58.  53.  71.
+ 103.  62. 258.  51. 259.  53.  71.  59.  50.  56.  62.  91.  54.  58.
+  54.  52.  57.]
+[2025-11-03 22:47:48,678 INFO] sampled 47103 images from pool.
+[2025-11-03 22:47:48,822 INFO] 65: Update the labeled data.
+[2025-11-03 22:48:26,014 INFO] 66816 iteration USE_EMA: True, train/sup_loss: 1.3175, train/aux_loss: 0.7670, train/total_loss: 2.0845, train/util_ratio: 0.1540, train/run_time: 0.0721, lr: 0.0282, train/prefecth_time: 0.0061 
+[2025-11-03 22:49:05,037 INFO] 67072 iteration USE_EMA: True, train/sup_loss: 1.3260, train/aux_loss: 0.6872, train/total_loss: 2.0132, train/util_ratio: 0.1362, train/run_time: 0.1637, lr: 0.0282, train/prefecth_time: 0.0117 
+[2025-11-03 22:49:46,432 INFO] 67328 iteration USE_EMA: True, train/sup_loss: 1.2119, train/aux_loss: 0.6066, train/total_loss: 1.8185, train/util_ratio: 0.1607, train/run_time: 0.1696, lr: 0.0282, train/prefecth_time: 0.0121 
+[2025-11-03 22:50:26,224 INFO] validating...
+[2025-11-03 22:50:29,121 INFO] confusion matrix:
+[[0.236 0.016 0.088 ... 0.    0.    0.004]
+ [0.    0.644 0.    ... 0.    0.    0.   ]
+ [0.08  0.008 0.468 ... 0.004 0.    0.   ]
+ ...
+ [0.024 0.072 0.032 ... 0.14  0.    0.008]
+ [0.004 0.02  0.    ... 0.    0.012 0.   ]
+ [0.096 0.036 0.008 ... 0.004 0.    0.124]]
+[2025-11-03 22:50:29,197 INFO] model saved: ./saved_models/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1/latest_model.pth
+[2025-11-03 22:50:29,198 INFO] 67584 iteration, USE_EMA: True, train/sup_loss: 1.1495, train/aux_loss: 0.6473, train/total_loss: 1.7968, train/util_ratio: 0.1652, train/run_time: 0.1222, eval/loss: 3.2618, eval/top-1-acc: 0.3297, eval/top-5-acc: 0.6026, eval/balanced_acc: 0.3297, eval/precision: 0.4080, eval/recall: 0.3297, eval/F1: 0.3227, lr: 0.0281, train/prefecth_time: 0.0054 BEST_EVAL_ACC: 0.3353, at 60416 iters
+[2025-11-03 22:51:06,130 INFO] 67840 iteration USE_EMA: True, train/sup_loss: 1.1928, train/aux_loss: 0.6968, train/total_loss: 1.8896, train/util_ratio: 0.1875, train/run_time: 0.0715, lr: 0.0281, train/prefecth_time: 0.0107 
+[2025-11-03 22:51:46,156 INFO] 68096 iteration USE_EMA: True, train/sup_loss: 1.2122, train/aux_loss: 0.5259, train/total_loss: 1.7381, train/util_ratio: 0.1763, train/run_time: 0.1657, lr: 0.0281, train/prefecth_time: 0.0095 
