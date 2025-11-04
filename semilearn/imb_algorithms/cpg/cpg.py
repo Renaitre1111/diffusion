@@ -38,6 +38,9 @@ class CPG(ImbAlgorithmBase):
         if args.dataset == 'svhn':
             self.update_step = 5
             self.memory_step = 5
+        if args.dataset == 'stl10':
+            self.update_step = 5
+            self.memory_step = 5
 
         # augment r and dim
         self.sim_num = None
