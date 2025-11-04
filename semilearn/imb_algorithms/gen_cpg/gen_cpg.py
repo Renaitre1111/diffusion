@@ -507,25 +507,14 @@ class Gen_CPG(ImbAlgorithmBase):
                 # compute cross entropy loss for labeled data
                 sup_loss = self.ce_loss(logits_x_lb_w, lb_for_sup, reduction='mean')
 
-                before_refined_select_ulb_dist = torch.where(self.select_ulb_dist <= min(self.lb_dist), 0, self.select_ulb_dist)
-
-                sorted_select_ulb_dist, _ = torch.sort(torch.unique(before_refined_select_ulb_dist))
-
-                if len(sorted_select_ulb_dist) == 1:
-                    refined_select_ulb_dist = torch.ones_like(before_refined_select_ulb_dist)
-                else:
-                    refined_select_ulb_dist = torch.where(before_refined_select_ulb_dist == 0, sorted_select_ulb_dist[1], before_refined_select_ulb_dist)
-
-                logit_adj_ulb = torch.log(refined_select_ulb_dist / torch.sum(refined_select_ulb_dist))
-
                 with torch.no_grad():
                     energy_w = -torch.logsumexp(logits_x_ulb_w.detach(), dim=1)
                     s_energy_quality = torch.sigmoid(-energy_w - self.args.energy_cutoff)
 
-                    probs_x_ulb_w = self.compute_prob((logits_x_ulb_w + logit_adj_ulb))
+                    probs_x_ulb_w = self.compute_prob((logits_x_ulb_w))
                     pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_w, use_hard_label=True, T=self.T, softmax=False)
                     
-                    probs_x_ulb_s = self.compute_prob((logits_x_ulb_s + logit_adj_ulb))
+                    probs_x_ulb_s = self.compute_prob((logits_x_ulb_s))
                     pseudo_label_s = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=probs_x_ulb_s, use_hard_label=True, T=self.T, softmax=False)
                 
                     mask_high_conf = probs_x_ulb_w.amax(dim=-1).ge(self.p_cutoff * (1.0 - self.args.smoothing))
