@@ -184,7 +184,7 @@ class DAWN(ImbAlgorithmBase):
 
     def _load_generated_data(self, data_dir):
         class_to_idx = np.load(os.path.join(data_dir, 'class_to_idx.npy'), allow_pickle=True).item()
-        generated_dir = os.path.join(data_dir, self.args.dataset)
+        generated_dir = os.path.join(data_dir, 'label')
 
         crop_size = self.args.img_size
         crop_ratio = self.args.crop_ratio
@@ -212,8 +212,7 @@ class DAWN(ImbAlgorithmBase):
     
     def _load_candidate_pool(self, data_dir):
         class_to_idx = np.load(os.path.join(data_dir, 'class_to_idx.npy'), allow_pickle=True).item()
-        if self.dataset == 'food101':
-            candidate_pool_dir = os.path.join(data_dir, 'food101_pool')
+        candidate_pool_dir = os.path.join(data_dir, 'pool')
 
         crop_size = self.args.img_size
         crop_ratio = self.args.crop_ratio
@@ -563,7 +562,7 @@ class DAWN(ImbAlgorithmBase):
             SSL_Argument('--warm_up', int, 30),
             SSL_Argument('--alpha', float, 1.0),
             SSL_Argument('--smoothing', float, 0.1),
-            SSL_Argument('--generated_data_dir', str, './data/generated'),
-            SSL_Argument('--candidate_pool_dir', str, './data/generated'),
+            SSL_Argument('--generated_data_dir', str, './data/generated/food101/lb_50_10'),
+            SSL_Argument('--candidate_pool_dir', str, './data/generated/food101/lb_50_10'),
             SSL_Argument('--energy_cutoff', float, -5.0)
         ]
