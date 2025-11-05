@@ -196,7 +196,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, default="./data")
     parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/food101/lb_labels_50_10_450_10_exp_random_noise_0.0_seed_1_idx.npy")
-    parser.add_argument("--output_dir", type=str, default="./data/food101")
+    parser.add_argument("--output_dir", type=str, default="./data/generated/lb_50_10")
     parser.add_argument("--num_styles", type=int, default=1)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
     parser.add_argument("--refiner_cutoff", type=float, default=0.85)

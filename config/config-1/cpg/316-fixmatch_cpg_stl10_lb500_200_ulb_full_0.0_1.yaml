@@ -1,6 +1,6 @@
 algorithm: fixmatch
 save_dir: ./saved_models/cpg
-save_name: 116-fixmatch_cpg_stl10_lb500_100_ulb_full_0.0_1
+save_name: 316-fixmatch_cpg_stl10_lb500_200_ulb_full_0.0_1
 resume: False
 load_path: None
 overwrite: True

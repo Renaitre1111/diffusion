@@ -32,6 +32,7 @@ CUDA_VISIBLE_DEVICES=3 python train.py --c "config/config-1/cpg/116-fixmatch_cpg
 CUDA_VISIBLE_DEVICES=2 python train.py --c "config/config-1/cpg/216-fixmatch_cpg_stl10_lb500_150_ulb_full_0.0_1.yaml"
 ```
 
+
 (Note: I know that USB supports multi-GPUs, but I still recommend you to run on single GPU, as some weird problems may occur.)
 
 The model will be automatically evaluated every 1024 iterations during training. After training, the last two lines in `/saved_models/cpg/203-fixmatch_cpg_cifar10_lb400_100_ulb4600_100_random_0.0_1/log.txt` will tell you the best accuracy. 
