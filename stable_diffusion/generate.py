@@ -153,7 +153,7 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
     resample_filter = Image.Resampling.LANCZOS
     for class_name, num_to_gen in class_to_gen.items():
         print(f"Generating {num_to_gen} images for {class_name}")
-        class_output_dir = os.path.join(args.output_dir, "generated", class_name)
+        class_output_dir = os.path.join(args.output_dir, class_name)
         os.makedirs(class_output_dir, exist_ok=True)
 
         class_idx = name_to_idx[class_name]

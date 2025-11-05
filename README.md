@@ -14,15 +14,19 @@ Also, I've made corresponding modifications to `semilearn/nets/` and several `__
 For example, on CIFAR-10-LT with long-tailed labeled data ($\gamma_l=100$) and arbitrary unlabeled data($\gamma_u=100$)
 
 ```
-CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/gen_cpg/115-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_random_0.0_1.yaml"
+CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/115-fixmatch_dawn_food101_lb50_10_ulb450_10_random_0.0_1.yaml"
 ```
 
 ```
-CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/gen_cpg/114-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_long-tail_0.0_1.yaml"
+CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/114-fixmatch_dawn_food101_lb50_10_ulb450_10_long-tail_0.0_1.yaml"
 ```
 
 ```
-CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/gen_cpg/113-fixmatch_gen_cpg_food101_lb50_10_ulb450_10_reverse-long-tail_0.0_1.yaml"
+CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/113-fixmatch_dawn_food101_lb50_10_ulb450_10_reverse-long-tail_0.0_1.yaml"
+```
+
+```
+CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/cpg/215-fixmatch_cpg_food101_lb50_15_ulb450_15_random_0.0_1.yaml"
 ```
 
 ```
@@ -32,6 +36,9 @@ CUDA_VISIBLE_DEVICES=3 python train.py --c "config/config-1/cpg/116-fixmatch_cpg
 CUDA_VISIBLE_DEVICES=2 python train.py --c "config/config-1/cpg/216-fixmatch_cpg_stl10_lb500_150_ulb_full_0.0_1.yaml"
 ```
 
+```
+python stable_diffusion/generate.py --lb_idx_path "./stable_diffusion/food101/lb_labels_50_15_450_15_exp_random_noise_0.0_seed_1_idx.npy" --output_dir ./data/generated/food101/lb_50_15/label
+```
 
 (Note: I know that USB supports multi-GPUs, but I still recommend you to run on single GPU, as some weird problems may occur.)
 
