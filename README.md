@@ -24,6 +24,9 @@ CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/114-fixmatch_da
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/113-fixmatch_dawn_food101_lb50_10_ulb450_10_reverse-long-tail_0.0_1.yaml"
 ```
+```
+CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/213-fixmatch_dawn_food101_lb50_15_ulb450_15_reverse-long-tail_0.0_1.yaml"
+```
 
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/cpg/215-fixmatch_cpg_food101_lb50_15_ulb450_15_random_0.0_1.yaml"
