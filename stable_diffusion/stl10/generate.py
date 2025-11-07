@@ -54,11 +54,11 @@ GLOBAL_NEGATIVE_PROMPT = (
 )
 
 CONFIG = {
-    "base_model_id": "stabilityai/stable-diffusion-xl-base-1.0",
-    "refiner_model_id": "stabilityai/stable-diffusion-xl-refiner-1.0",
+    "base_model_id": "stabilityai/stable-diffusion-v1-5",
+    "refiner_model_id": None,
     "ip_adapter_repo": "h94/IP-Adapter",
-    "ip_adapter_weights_dir": "sdxl_models",
-    "ip_adapter_weights_file": "ip-adapter-plus_sdxl_vit-h.safetensors"
+    "ip_adapter_weights_dir": "models",
+    "ip_adapter_weights_file": "ip-adapter-plus_sd15.safetensors"
 }
 
 def create_modular_prompt(class_name):
@@ -133,7 +133,7 @@ def load_generation_pipeline(config, device="cuda"):
         use_safetensors=True,
         image_encoder=image_encoder,
     )
-
+    '''
     refiner = AutoPipelineForImage2Image.from_pretrained(
         config["refiner_model_id"],
         text_encoder_2=pipe.text_encoder_2,
@@ -142,14 +142,15 @@ def load_generation_pipeline(config, device="cuda"):
         variant="fp16",
         use_safetensors=True
     )
-    pipe.refiner = refiner
+    '''
+    pipe.refiner = None
 
     pipe.load_ip_adapter(
         config["ip_adapter_repo"],
         subfolder=config["ip_adapter_weights_dir"],
         weight_name=config["ip_adapter_weights_file"],
     )
-    refiner.to(device)
+    # refiner.to(device)
     pipe.to(device)
     return pipe
 
@@ -160,9 +161,9 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
     name_to_idx = {name: i for i, name in enumerate(classes)}
 
     pipe.set_ip_adapter_scale(args.ip_adapter_scale)
-    pipe.refiner.set_ip_adapter_scale(args.ip_adapter_scale)
+    # pipe.refiner.set_ip_adapter_scale(args.ip_adapter_scale)
 
-    refiner_cutoff = args.refiner_cutoff
+    # refiner_cutoff = args.refiner_cutoff
     num_inference_steps = args.steps
 
     total_generated = 0
@@ -180,17 +181,16 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             ip_images = get_ip_adapter_images(image_paths, args.num_styles)
             prompt = create_modular_prompt(class_name)
 
-            latents = pipe(
+            images = pipe(
                 prompt=prompt,
                 negative_prompt=GLOBAL_NEGATIVE_PROMPT,
                 ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
-                denoising_end=refiner_cutoff,
                 output_type="latent",
                 height=args.image_size,
                 width=args.image_size
             ).images
-
+            '''
             image = pipe.refiner(
                 prompt=prompt,
                 negative_prompt=GLOBAL_NEGATIVE_PROMPT,
@@ -198,7 +198,8 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
                 num_inference_steps=num_inference_steps,
                 denoising_start=refiner_cutoff,
             ).images[0]
-
+            '''
+            image = images[0]
             # image = image.resize((args.image_size, args.image_size), resample=resample_filter)
             image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.3))
 
@@ -216,7 +217,7 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", type=str, default="./data/generated/stl10/lb_500_100/label")
     parser.add_argument("--num_styles", type=int, default=1)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
-    parser.add_argument("--refiner_cutoff", type=float, default=0.85)
+    # parser.add_argument("--refiner_cutoff", type=float, default=0.85)
     parser.add_argument("--steps", type=int, default=35)
     parser.add_argument("--image_size", type=int, default=256)
 
