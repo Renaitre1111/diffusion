@@ -198,7 +198,7 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
 
             images = pipe(
                 prompt=prompts,
-                negative_prompt=GLOBAL_NEGATIVE_PROMPT,
+                negative_prompt=[GLOBAL_NEGATIVE_PROMPT] * current_bs,
                 ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
                 height=args.gen_size,
