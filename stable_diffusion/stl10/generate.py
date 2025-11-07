@@ -14,47 +14,48 @@ from collections import Counter, defaultdict
 import math
 
 MODULE_STYLE = [
-    "a photo of",
-    "a user generated photo of",
-    "a snapshot of",
-    "a blurry photo of",
-    "a low-resolution image of",
-    "an image of",
-    "a user-generated image of",
-    "a snapshot from a phone of"
+    "a realistic photograph of",
+    "a natural photo of",
+    "a high-quality photo of",
+    "a detailed photo of",
+    "a documentary-style photo of",
+    "an outdoor photograph of"
 ]
 
 MODULE_CONTEXT = [
-    "in a natural setting",
-    "with a blurry background",
-    "in the wild",
-    "on a road",
+    "in natural daylight",
+    "outdoors in a realistic setting",
+    "with a clean background",
+    "on a simple background",
+    "in its natural habitat",
+    "on an open road",
+    "on a runway",
+    "at sea",
     "in the sky",
-    "on the water",
-    "in a field",
-    "in a forest",
-    "on a street",
-    "against a simple background"
+    "in a field"
 ]
 
 MODULE_VIEW = [
-    "a side view of",
-    "a close-up shot of",
-    "viewed from the side",
-    "a photo from a distance of",
-    "full body shot of",
-    "a single",
-    "profile of"
+    "a side profile of",
+    "a three-quarter view of",
+    "a front view of",
+    "a close-up of",
+    "a wide shot of",
+    "centered composition of",
+    "an action shot of"
 ]
 
 GLOBAL_NEGATIVE_PROMPT = (
-    "professional food photography, studio lighting, high quality, "
-    "artistic, advertisement, 3d render, illustration, drawing, "
-    "anime, logo, watermark, text, signature, unreal engine"
+    "people, person, human, portrait, face, skin, nsfw, nude, naked, "
+    "blood, gore, violence, injury, "
+    "text, caption, watermark, logo, signature, letters, words, "
+    "drawing, illustration, painting, cartoon, anime, 3d render, cgi, "
+    "low quality, lowres, jpeg artifacts, blurry, deformed, mutated, extra limbs, "
+    "out of frame, cropped, frame, border, duplicate, worst quality"
 )
 
 CONFIG = {
-    "base_model_id": "stabilityai/stable-diffusion-v1-5",
+    "base_model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
     "refiner_model_id": None,
     "ip_adapter_repo": "h94/IP-Adapter",
     "ip_adapter_weights_dir": "models",
@@ -66,10 +67,20 @@ def create_modular_prompt(class_name):
     context = random.choice(MODULE_CONTEXT)
     view = random.choice(MODULE_VIEW)
 
-    class_name_formatted = class_name.replace('_', ' ')
+    name = class_name.replace("_", " ")
+    wildlife_classes = {"bird", "cat", "deer", "dog", "horse", "monkey"}
+    vehicle_classes  = {"airplane", "car", "ship", "truck"}
+    extra_tag = ""
+    if name in wildlife_classes:
+        extra_tag = "wildlife photography"
+    elif name in vehicle_classes:
+        extra_tag = "transportation photography"
 
-    prompt = f"{style} {class_name_formatted}, {view}, {context}"
-    return prompt
+    parts = [f"{style} {name}", f"{view}", f"{context}"]
+    if extra_tag:
+        parts.append(extra_tag)
+
+    return ", ".join(parts)
 
 def get_data(data_dir, lb_idx_path):
     stl10_images_dir = os.path.join(data_dir, "stl10_images")
@@ -143,6 +154,7 @@ def load_generation_pipeline(config, device="cuda"):
         use_safetensors=True
     )
     '''
+    pipe.safety_checker = None
     pipe.refiner = None
 
     pipe.load_ip_adapter(
@@ -186,9 +198,8 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
                 negative_prompt=GLOBAL_NEGATIVE_PROMPT,
                 ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
-                output_type="latent",
-                height=args.image_size,
-                width=args.image_size
+                height=args.gen_size,
+                width=args.gen_size
             ).images
             '''
             image = pipe.refiner(
@@ -201,10 +212,16 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             '''
             image = images[0]
             # image = image.resize((args.image_size, args.image_size), resample=resample_filter)
-            image_blurred = image.filter(ImageFilter.GaussianBlur(radius=0.3))
+            image_blurred = image.filter(ImageFilter.GaussianBlur(radius=1.0))
+
+            image_resized = image_blurred.resize((args.image_size, args.image_size), resample=Image.Resampling.LANCZOS)
+
+            noise = np.random.normal(0, 3, (args.image_size, args.image_size, 3)).astype(np.int16)
+            noisy = np.clip(np.array(image_resized, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
+            image_noisy = Image.fromarray(noisy, 'RGB')
 
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
-            image_blurred.save(save_path, format="PNG")
+            image_noisy.save(save_path, format="PNG")
             total_generated += 1
     
     np.save(os.path.join(args.output_dir, "class_to_idx.npy"), name_to_idx, allow_pickle=True)
@@ -219,7 +236,8 @@ if __name__ == "__main__":
     parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
     # parser.add_argument("--refiner_cutoff", type=float, default=0.85)
     parser.add_argument("--steps", type=int, default=35)
-    parser.add_argument("--image_size", type=int, default=256)
+    parser.add_argument("--gen_size", type=int, default=512)
+    parser.add_argument("--image_size", type=int, default=96)
 
     args = parser.parse_args()
 
