@@ -212,13 +212,13 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", type=str, default="./data")
-    parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/stl10/lb_labels_500_100_None_Noen_None_noise_0.0_seed_1_idx.npy")
+    parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/stl10/lb_labels_500_100_None_None_None_noise_0.0_seed_1_idx.npy")
     parser.add_argument("--output_dir", type=str, default="./data/generated/stl10/lb_500_100/label")
     parser.add_argument("--num_styles", type=int, default=1)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
     parser.add_argument("--refiner_cutoff", type=float, default=0.85)
     parser.add_argument("--steps", type=int, default=35)
-    parser.add_argument("--image_size", type=int, default=96)
+    parser.add_argument("--image_size", type=int, default=256)
 
     args = parser.parse_args()
 
