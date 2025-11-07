@@ -212,12 +212,13 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             '''
             image = images[0]
             # image = image.resize((args.image_size, args.image_size), resample=resample_filter)
-            image_blurred = image.filter(ImageFilter.GaussianBlur(radius=1.0))
 
-            image_resized = image_blurred.resize((args.image_size, args.image_size), resample=Image.Resampling.LANCZOS)
+            image_resized = image.resize((args.image_size, args.image_size), resample=Image.Resampling.LANCZOS)
 
-            noise = np.random.normal(0, 3, (args.image_size, args.image_size, 3)).astype(np.int16)
-            noisy = np.clip(np.array(image_resized, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
+            image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=args.blur_radius))
+
+            noise = np.random.normal(0, args.noise_std, (args.image_size, args.image_size, 3)).astype(np.int16)
+            noisy = np.clip(np.array(image_blurred, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
             image_noisy = Image.fromarray(noisy, 'RGB')
 
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
@@ -238,6 +239,8 @@ if __name__ == "__main__":
     parser.add_argument("--steps", type=int, default=35)
     parser.add_argument("--gen_size", type=int, default=512)
     parser.add_argument("--image_size", type=int, default=96)
+    parser.add_argument("--blur_radius", type=float, default=0.4)
+    parser.add_argument("--noise_std", type=int, default=2)
 
     args = parser.parse_args()
 
