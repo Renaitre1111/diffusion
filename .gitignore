@@ -1,3 +1,7 @@
 data/
 saved_models/
 .DS_Store
+config/config-1/cpg/
+config/config-1/fixmatch/
+config/config-1/freematch/
+config/config-1/softmatch/

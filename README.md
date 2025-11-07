@@ -16,17 +16,17 @@ For example, on CIFAR-10-LT with long-tailed labeled data ($\gamma_l=100$) and a
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/115-fixmatch_dawn_food101_lb50_10_ulb450_10_random_0.0_1.yaml"
 ```
-
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/114-fixmatch_dawn_food101_lb50_10_ulb450_10_long-tail_0.0_1.yaml"
 ```
-
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/113-fixmatch_dawn_food101_lb50_10_ulb450_10_reverse-long-tail_0.0_1.yaml"
 ```
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/dawn/213-fixmatch_dawn_food101_lb50_15_ulb450_15_reverse-long-tail_0.0_1.yaml"
 ```
+
+
 
 ```
 CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/cpg/215-fixmatch_cpg_food101_lb50_15_ulb450_15_random_0.0_1.yaml"
@@ -38,7 +38,15 @@ CUDA_VISIBLE_DEVICES=3 python train.py --c "config/config-1/cpg/116-fixmatch_cpg
 ```
 CUDA_VISIBLE_DEVICES=2 python train.py --c "config/config-1/cpg/216-fixmatch_cpg_stl10_lb500_150_ulb_full_0.0_1.yaml"
 ```
-
+```
+CUDA_VISIBLE_DEVICES=3 python train.py --c "config/config-1/fixmatch/fixmatch_stl10_500_100_ulb_full_0.0_1.yaml"
+```
+```
+CUDA_VISIBLE_DEVICES=2 python train.py --c "config/config-1/fixmatch/fixmatch_stl10_500_150_ulb_full_0.0_1.yaml"
+```
+```
+CUDA_VISIBLE_DEVICES=0 python train.py --c "config/config-1/freematch/freematch_stl10_500_150_ulb_full_0.0_1.yaml" --alg freematch
+```
 ```
 python stable_diffusion/generate.py --lb_idx_path "./stable_diffusion/food101/lb_labels_50_15_450_15_exp_random_noise_0.0_seed_1_idx.npy" --output_dir ./data/generated/food101/lb_50_15/label
 ```
