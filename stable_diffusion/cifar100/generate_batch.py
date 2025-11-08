@@ -73,12 +73,12 @@ def create_modular_prompt(class_name):
 
     return ", ".join(parts)
 
-def get_data(data_dir, lb_idx_path):
+def get_data(data_dir, lb_idx_path, num_per_class):
     cifar100_images_dir = os.path.join(data_dir, "cifar100_images")
     data_dir = os.path.join(data_dir, "cifar100")
     dset = torchvision.datasets.CIFAR100(data_dir, train=True, download=True)
-    labels_all = np.asarray(dset.targets, np.int64)  # np.ndarray[int]
-    classes = dset.classes                        # list[str]
+    labels_all = np.asarray(dset.targets, np.int64)
+    classes = dset.classes
 
     img_files = []
     for i in range(len(dset.data)):
@@ -101,13 +101,8 @@ def get_data(data_dir, lb_idx_path):
         y = int(labels_all[i])
         class_to_data[y].append(img_files[i])
 
-    if class_to_data:
-        n_max = max(len(v) for v in class_to_data.values())
-    else:
-        n_max = 0
-
-    class_to_gen = {classes[y]: (n_max - len(paths))
-                    for y, paths in class_to_data.items() if (n_max - len(paths)) > 0}
+    class_to_gen = {classes[y]: num_per_class
+                    for y in class_to_data.keys()}
 
     return class_to_gen, class_to_data, classes
 
@@ -148,17 +143,22 @@ def load_generation_pipeline(config, device="cuda"):
 
 def run_generation(pipe, class_to_gen, class_to_data, classes, args):
     if not class_to_gen:
+        print("No images to generate.")
         return
     
     name_to_idx = {name: i for i, name in enumerate(classes)}
 
     pipe.set_ip_adapter_scale(args.ip_adapter_scale)
     num_inference_steps = args.steps
+    bs = args.batch_size
 
     total_generated = 0
 
-    resample_filter = Image.Resampling.LANCZOS
+    resample_filter = Image.Resampling.BILINEAR
+    
     for class_name, num_to_gen in class_to_gen.items():
+        if num_to_gen <= 0:
+            continue
         print(f"Generating {num_to_gen} images for {class_name}")
         class_output_dir = os.path.join(args.output_dir, class_name)
         os.makedirs(class_output_dir, exist_ok=True)
@@ -166,34 +166,42 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
         class_idx = name_to_idx[class_name]
         image_paths = class_to_data[class_idx]
 
-        for i in range(num_to_gen):
+        num_batches = math.ceil(num_to_gen / bs)
+        gen_count = 0
+
+        for batch_idx in range(num_batches):
+            current_bs = min(bs, num_to_gen - gen_count)
+            if current_bs <= 0:
+                break
+            
             ip_images = get_ip_adapter_images(image_paths, args.num_styles)
-            prompt = create_modular_prompt(class_name)
+            prompts = [create_modular_prompt(class_name) for _ in range(current_bs)]
 
             images = pipe(
-                prompt=prompt,
-                negative_prompt=GLOBAL_NEGATIVE_PROMPT,
+                prompt=prompts,
+                negative_prompt=[GLOBAL_NEGATIVE_PROMPT] * current_bs,
                 ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
                 height=args.gen_size,
                 width=args.gen_size
             ).images
-            
-            image = images[0]
-            
-            image_resized = image.resize((args.image_size, args.image_size), resample=Image.Resampling.BILINEAR)
-            
-            image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=args.blur_radius))
 
-            noise = np.random.normal(0, args.noise_std, (args.image_size, args.image_size, 3)).astype(np.int16)
-            noisy = np.clip(np.array(image_blurred, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
-            image_noisy = Image.fromarray(noisy, 'RGB')
+            for i, image in enumerate(images):
+                image_resized = image.resize((args.image_size, args.image_size), resample=resample_filter)
+                
+                image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=args.blur_radius))
 
-            save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
-            image_noisy.save(save_path, format="PNG")
-            total_generated += 1
-    
-    np.save(os.path.join("./data/generated/cifar100/lb_100_50", "class_to_idx.npy"), name_to_idx, allow_pickle=True)
+                noise = np.random.normal(0, args.noise_std, (args.image_size, args.image_size, 3)).astype(np.int16)
+                noisy = np.clip(np.array(image_blurred, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
+                image_noisy = Image.fromarray(noisy, 'RGB')
+
+                img_idx = gen_count + i + 1
+                save_path = os.path.join(class_output_dir, f"{class_name}_{img_idx}.png")
+                image_noisy.save(save_path, format="PNG")
+
+            gen_count += len(images)
+            total_generated += len(images)
+
     print(f"Total generated: {total_generated}")
 
 if __name__ == "__main__":
@@ -201,7 +209,7 @@ if __name__ == "__main__":
     parser.add_argument("--data_dir", type=str, default="./data")
     
     parser.add_argument("--lb_idx_path", type=str, default="./stable_diffusion/cifar100/lb_labels_50_10_450_10_pxe_noise_0.0_seed_1_idx.npy") 
-    parser.add_argument("--output_dir", type=str, default="./data/generated/cifar100/lb_50_10/label") 
+    parser.add_argument("--output_dir", type=str, default="./data/generated/cifar100/lb_50_10/pool") 
     
     parser.add_argument("--num_styles", type=int, default=1)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
@@ -212,11 +220,14 @@ if __name__ == "__main__":
     parser.add_argument("--blur_radius", type=float, default=0.5) 
     parser.add_argument("--noise_std", type=int, default=5)  
     
+    parser.add_argument("--batch_size", type=int, default=30, help="Number of images to generate in a batch")
+    parser.add_argument("--num_per_class", type=int, default=450, help="Fixed number of images to generate per class")
+    
     args = parser.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    class_to_gen, class_to_data, classes = get_data(args.data_dir, args.lb_idx_path)
+    class_to_gen, class_to_data, classes = get_data(args.data_dir, args.lb_idx_path, args.num_per_class)
 
     pipe = load_generation_pipeline(CONFIG, device=device)
     run_generation(pipe, class_to_gen, class_to_data, classes, args)

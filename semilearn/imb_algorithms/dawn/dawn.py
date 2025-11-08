@@ -192,12 +192,12 @@ class DAWN(ImbAlgorithmBase):
         gen_data = []
         gen_targets = []
 
-        if self.dataset == 'stl10':
-            target_h, target_w = int(self.data.shape[1]), int(self.data.shape[2])
-            resize_hw = (target_w, target_h)
-        elif self.dataset == 'food101':
+        if self.dataset == 'food101':
             side = int(math.floor(crop_size / crop_ratio))
             resize_hw = (side, side)
+        else:
+            target_h, target_w = int(self.data.shape[1]), int(self.data.shape[2])
+            resize_hw = (target_w, target_h)
 
         for class_name in os.listdir(generated_dir):
             class_dir = os.path.join(generated_dir, class_name)
@@ -225,13 +225,13 @@ class DAWN(ImbAlgorithmBase):
 
         crop_size = self.args.img_size
         crop_ratio = self.args.crop_ratio
-
-        if self.dataset == 'stl10':
-            target_h, target_w = int(self.data.shape[1]), int(self.data.shape[2])
-            resize_hw = (target_w, target_h)
-        elif self.dataset == 'food101':
+        
+        if self.dataset == 'food101':
             side = int(math.floor(crop_size / crop_ratio))
             resize_hw = (side, side)
+        else:
+            target_h, target_w = int(self.data.shape[1]), int(self.data.shape[2])
+            resize_hw = (target_w, target_h)
 
         for class_name in os.listdir(candidate_pool_dir):
             class_dir = os.path.join(candidate_pool_dir, class_name)
@@ -580,7 +580,7 @@ class DAWN(ImbAlgorithmBase):
             SSL_Argument('--warm_up', int, 30),
             SSL_Argument('--alpha', float, 1.0),
             SSL_Argument('--smoothing', float, 0.1),
-            SSL_Argument('--generated_data_dir', str, './data/generated/stl10/lb_500_100'),
-            SSL_Argument('--candidate_pool_dir', str, './data/generated/stl10/lb_500_100'),
+            SSL_Argument('--generated_data_dir', str, './data/generated/cifar100/lb_50_10'),
+            SSL_Argument('--candidate_pool_dir', str, './data/generated/cifar100/lb_50_10'),
             SSL_Argument('--energy_cutoff', float, -5.0)
         ]
