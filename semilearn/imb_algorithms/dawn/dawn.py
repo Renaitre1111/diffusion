@@ -192,13 +192,22 @@ class DAWN(ImbAlgorithmBase):
         gen_data = []
         gen_targets = []
 
+        if self.dataset == 'stl10':
+            target_h, target_w = int(self.data.shape[1]), int(self.data.shape[2])
+            resize_hw = (target_w, target_h)
+        elif self.dataset == 'food101':
+            side = int(math.floor(crop_size / crop_ratio))
+            resize_hw = (side, side)
+
         for class_name in os.listdir(generated_dir):
             class_dir = os.path.join(generated_dir, class_name)
             class_idx = class_to_idx[class_name]
 
             for img_name in os.listdir(class_dir):
                 img_path = os.path.join(class_dir, img_name)
-                gen_data.append(np.array(Image.open(img_path).convert('RGB').resize((int(math.floor(crop_size / crop_ratio)), int(math.floor(crop_size / crop_ratio))))))
+                img = Image.open(img_path).convert('RGB').resize(resize_hw)
+                gen_data.append(np.asarray(img, dtype=np.uint8))
+                # gen_data.append(np.array(Image.open(img_path).convert('RGB').resize((int(math.floor(crop_size / crop_ratio)), int(math.floor(crop_size / crop_ratio))))))
                 gen_targets.append(class_idx)
 
         gen_data = np.array(gen_data)
@@ -217,13 +226,22 @@ class DAWN(ImbAlgorithmBase):
         crop_size = self.args.img_size
         crop_ratio = self.args.crop_ratio
 
+        if self.dataset == 'stl10':
+            target_h, target_w = int(self.data.shape[1]), int(self.data.shape[2])
+            resize_hw = (target_w, target_h)
+        elif self.dataset == 'food101':
+            side = int(math.floor(crop_size / crop_ratio))
+            resize_hw = (side, side)
+
         for class_name in os.listdir(candidate_pool_dir):
             class_dir = os.path.join(candidate_pool_dir, class_name)
             class_idx = class_to_idx[class_name]
 
             for img_name in os.listdir(class_dir):
                 img_path = os.path.join(class_dir, img_name)
-                self.candidate_data[class_idx].append(np.array(Image.open(img_path).convert('RGB').resize((int(math.floor(crop_size / crop_ratio)), int(math.floor(crop_size / crop_ratio))))))
+                img = Image.open(img_path).convert('RGB').resize(resize_hw)
+                self.candidate_data[class_idx].append(np.asarray(img, dtype=np.uint8))
+                # self.candidate_data[class_idx].append(np.array(Image.open(img_path).convert('RGB').resize((int(math.floor(crop_size / crop_ratio)), int(math.floor(crop_size / crop_ratio))))))
                 self.candidate_targets[class_idx].append(class_idx)
 
     def train(self):
@@ -562,7 +580,7 @@ class DAWN(ImbAlgorithmBase):
             SSL_Argument('--warm_up', int, 30),
             SSL_Argument('--alpha', float, 1.0),
             SSL_Argument('--smoothing', float, 0.1),
-            SSL_Argument('--generated_data_dir', str, './data/generated/food101/lb_50_15'),
-            SSL_Argument('--candidate_pool_dir', str, './data/generated/food101/lb_50_15'),
+            SSL_Argument('--generated_data_dir', str, './data/generated/stl10/lb_500_100'),
+            SSL_Argument('--candidate_pool_dir', str, './data/generated/stl10/lb_500_100'),
             SSL_Argument('--energy_cutoff', float, -5.0)
         ]
