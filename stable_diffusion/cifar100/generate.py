@@ -193,7 +193,7 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             image_noisy.save(save_path, format="PNG")
             total_generated += 1
     
-    np.save(os.path.join("./data/generated/cifar100/lb_100_50", "class_to_idx.npy"), name_to_idx, allow_pickle=True)
+    np.save(os.path.join("./data/generated/cifar100/lb_50_10", "class_to_idx.npy"), name_to_idx, allow_pickle=True)
     print(f"Total generated: {total_generated}")
 
 if __name__ == "__main__":
