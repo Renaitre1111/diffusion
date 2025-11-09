@@ -29,7 +29,11 @@ MODULE_CONTEXT = [
     "outdoors",
     "in a complex scene",
     "with a non-uniform background",
-    "in the wild"
+    "in the wild",
+    "with a blurry background",
+    "indoors",
+    "on a surface",
+    "against a simple background"
 ]
 
 MODULE_VIEW = [
@@ -45,21 +49,24 @@ MODULE_VIEW = [
 ]
 
 GLOBAL_NEGATIVE_PROMPT = (
-    "people, person, human, portrait, face, skin, nsfw, nude, naked, "
+    "(artistic:1.3), (digital art:1.2), (illustration:1.2), (painting:1.2), (oil painting:1.2), "
+    "drawing, cartoon, anime, 3d render, cgi, "
+    "concept art, artstation, deviantart, stylized, abstract, "
+    "(sharp:1.2), (clear:1.2), (high resolution:1.2), (4k:1.2), (8k:1.2), "
+    "professional photography, studio lighting, product shot, "
+    "beautiful, perfect, aesthetic, flawless, stunning, "
+    "nsfw, nude, naked, "
     "blood, gore, violence, injury, "
     "text, caption, watermark, logo, signature, letters, words, "
-    "drawing, illustration, painting, cartoon, anime, 3d render, cgi, "
-    "deformed, mutated, extra limbs, out of frame, duplicate, "
-    "**high resolution, 4k, 8k, sharp, clear, professional photography, studio lighting, product shot, "
-    "clean background, simple background, plain background, white background, solid color background, isolated**"
+    "deformed, mutated, extra limbs, out of frame, duplicate"
 )
 
 CONFIG = {
-    "base_model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+    "base_model_id": "SG161222/Realistic_Vision_V5.1_noVAE",
     "refiner_model_id": None,
     "ip_adapter_repo": "h94/IP-Adapter",
     "ip_adapter_weights_dir": "models",
-    "ip_adapter_weights_file": "ip-adapter-plus_sd15.safetensors"
+    "ip_adapter_weights_file": "ip-adapter-plus_sd15.safensors"
 }
 
 def create_modular_prompt(class_name):
@@ -68,8 +75,9 @@ def create_modular_prompt(class_name):
     view = random.choice(MODULE_VIEW)
 
     name = class_name.replace("_", " ")
+    realism_prefix = "a real photo of, realistic photograph of, "
     
-    parts = [f"{style} {name}", f"{view}", f"{context}"]
+    parts = [f"{realism_prefix}{style} {name}", f"{view}", f"{context}"]
 
     return ", ".join(parts)
 
@@ -110,7 +118,11 @@ def get_ip_adapter_images(image_paths, num_styles):
     num_select = min(len(image_paths), num_styles)
     selected_images = random.sample(image_paths, num_select)
 
-    pil_images = [Image.open(path).convert('RGB') for path in selected_images]
+    pil_images = []
+    for path in selected_images:
+        img = Image.open(path).convert('RGB')
+        img = img.resize((224, 224), resample=Image.Resampling.LANCZOS)
+        pil_images.append(img)
     return pil_images
     
 def load_generation_pipeline(config, device="cuda"):
@@ -125,7 +137,7 @@ def load_generation_pipeline(config, device="cuda"):
     pipe = AutoPipelineForText2Image.from_pretrained(
         config["base_model_id"],
         torch_dtype=dtype,
-        variant="fp16",
+        # variant="fp16",
         use_safetensors=True,
         image_encoder=image_encoder,
     )
@@ -176,6 +188,9 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             
             ip_images = get_ip_adapter_images(image_paths, args.num_styles)
             prompts = [create_modular_prompt(class_name) for _ in range(current_bs)]
+            
+            generator_seed = args.seed + batch_idx + (class_idx * num_batches)
+            generator = torch.Generator(device=pipe.device).manual_seed(generator_seed)
 
             images = pipe(
                 prompt=prompts,
@@ -183,21 +198,17 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
                 ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
                 height=args.gen_size,
-                width=args.gen_size
+                width=args.gen_size,
+                generator=generator, 
+                guidance_scale=args.guidance_scale
             ).images
 
             for i, image in enumerate(images):
                 image_resized = image.resize((args.image_size, args.image_size), resample=resample_filter)
-                
-                image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=args.blur_radius))
-
-                noise = np.random.normal(0, args.noise_std, (args.image_size, args.image_size, 3)).astype(np.int16)
-                noisy = np.clip(np.array(image_blurred, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
-                image_noisy = Image.fromarray(noisy, 'RGB')
-
+            
                 img_idx = gen_count + i + 1
                 save_path = os.path.join(class_output_dir, f"{class_name}_{img_idx}.png")
-                image_noisy.save(save_path, format="PNG")
+                image_resized.save(save_path, format="PNG")
 
             gen_count += len(images)
             total_generated += len(images)
@@ -214,16 +225,22 @@ if __name__ == "__main__":
     parser.add_argument("--num_styles", type=int, default=1)
     parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
     parser.add_argument("--steps", type=int, default=35)
-    parser.add_argument("--gen_size", type=int, default=512)
+    parser.add_GArgument("--gen_size", type=int, default=512)
 
     parser.add_argument("--image_size", type=int, default=32)
-    parser.add_argument("--blur_radius", type=float, default=0.5) 
-    parser.add_argument("--noise_std", type=int, default=5)  
-    
+
+    parser.add_argument("--guidance_scale", type=float, default=8.0)
+    parser.add_argument("--seed", type=int, default=42)
+
     parser.add_argument("--batch_size", type=int, default=30, help="Number of images to generate in a batch")
     parser.add_argument("--num_per_class", type=int, default=450, help="Fixed number of images to generate per class")
     
     args = parser.parse_args()
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 

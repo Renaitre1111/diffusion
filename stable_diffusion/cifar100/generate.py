@@ -29,7 +29,11 @@ MODULE_CONTEXT = [
     "outdoors",
     "in a complex scene",
     "with a non-uniform background",
-    "in the wild"
+    "in the wild",
+    "with a blurry background",
+    "indoors",
+    "on a surface",
+    "against a simple background"
 ]
 
 MODULE_VIEW = [
@@ -45,17 +49,20 @@ MODULE_VIEW = [
 ]
 
 GLOBAL_NEGATIVE_PROMPT = (
-    "oil painting, painting, drawing, illustration, cartoon, anime, 3d render, cgi, " 
-    "people, person, human, portrait, face, skin, nsfw, nude, naked, "
+    "(artistic:1.3), (digital art:1.2), (illustration:1.2), (painting:1.2), (oil painting:1.2), "
+    "drawing, cartoon, anime, 3d render, cgi, "
+    "concept art, artstation, deviantart, stylized, abstract, "
+    "(sharp:1.2), (clear:1.2), (high resolution:1.2), (4k:1.2), (8k:1.2), "
+    "professional photography, studio lighting, product shot, "
+    "beautiful, perfect, aesthetic, flawless, stunning, "
+    "nsfw, nude, naked, "
     "blood, gore, violence, injury, "
     "text, caption, watermark, logo, signature, letters, words, "
-    "deformed, mutated, extra limbs, out of frame, duplicate, "
-    "**high resolution, 4k, 8k, sharp, clear, professional photography, studio lighting, product shot, "
-    "clean background, simple background, plain background, white background, solid color background, isolated**"
+    "deformed, mutated, extra limbs, out of frame, duplicate"
 )
 
 CONFIG = {
-    "base_model_id": "stable-diffusion-v1-5/stable-diffusion-v1-5",
+    "base_model_id": "SG161222/Realistic_Vision_V5.1_noVAE",
     "refiner_model_id": None,
     "ip_adapter_repo": "h94/IP-Adapter",
     "ip_adapter_weights_dir": "models",
@@ -135,7 +142,7 @@ def load_generation_pipeline(config, device="cuda"):
     pipe = AutoPipelineForText2Image.from_pretrained(
         config["base_model_id"],
         torch_dtype=dtype,
-        variant="fp16",
+        # variant="fp16",
         use_safetensors=True,
         image_encoder=image_encoder,
     )
@@ -185,12 +192,14 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
                 num_inference_steps=num_inference_steps,
                 height=args.gen_size,
                 width=args.gen_size,
-                generator=generator
+                generator=generator,
+                guidance_scale=args.guidance_scale
             ).images
             
             image = images[0]
             
             image_resized = image.resize((args.image_size, args.image_size), resample=Image.Resampling.BILINEAR)
+            '''
 
             current_blur_radius = random.uniform(args.min_blur_radius, args.max_blur_radius)
             image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=current_blur_radius))
@@ -205,9 +214,9 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
 
             noisy = np.clip(np.array(image_with_artifacts, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
             image_noisy = Image.fromarray(noisy, 'RGB')
-
+            '''
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
-            image_noisy.save(save_path, format="PNG")
+            image_resized.save(save_path, format="PNG")
             total_generated += 1
     
     np.save(os.path.join("./data/generated/cifar100/lb_50_10", "class_to_idx.npy"), name_to_idx, allow_pickle=True)
@@ -224,20 +233,11 @@ if __name__ == "__main__":
     parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
     parser.add_argument("--steps", type=int, default=35)
     parser.add_argument("--gen_size", type=int, default=512)
+    parser.add_argument("--guidance_scale", type=float, default=8.0)
 
     parser.add_argument("--seed", type=int, default=42)
 
     parser.add_argument("--image_size", type=int, default=32)
-
-    parser.add_argument("--min_blur_radius", type=float, default=0.1) 
-    parser.add_argument("--max_blur_radius", type=float, default=1.2) 
-    
-    parser.add_argument("--min_noise_std", type=float, default=2.0)  
-    parser.add_argument("--max_noise_std", type=float, default=15.0)
-    
-    parser.add_argument("--min_jpeg_quality", type=int, default=75)  
-    parser.add_argument("--max_jpeg_quality", type=int, default=95)
-    
     args = parser.parse_args()
 
     random.seed(args.seed)
