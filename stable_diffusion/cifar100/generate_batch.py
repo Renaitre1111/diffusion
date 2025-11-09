@@ -66,7 +66,7 @@ CONFIG = {
     "refiner_model_id": None,
     "ip_adapter_repo": "h94/IP-Adapter",
     "ip_adapter_weights_dir": "models",
-    "ip_adapter_weights_file": "ip-adapter-plus_sd15.safensors"
+    "ip_adapter_weights_file": "ip-adapter-plus_sd15.safetensors"
 }
 
 def create_modular_prompt(class_name):
@@ -150,7 +150,10 @@ def load_generation_pipeline(config, device="cuda"):
         subfolder=config["ip_adapter_weights_dir"],
         weight_name=config["ip_adapter_weights_file"],
     )
+    pipe.enable_xformers_memory_efficient_attention()
     pipe.to(device)
+
+    pipe.unet = torch.compile(pipe.unet, mode="reduce-overhead")
     return pipe
 
 def run_generation(pipe, class_to_gen, class_to_data, classes, args):
@@ -188,9 +191,6 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             
             ip_images = get_ip_adapter_images(image_paths, args.num_styles)
             prompts = [create_modular_prompt(class_name) for _ in range(current_bs)]
-            
-            generator_seed = args.seed + batch_idx + (class_idx * num_batches)
-            generator = torch.Generator(device=pipe.device).manual_seed(generator_seed)
 
             images = pipe(
                 prompt=prompts,
@@ -198,8 +198,7 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
                 ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
                 height=args.gen_size,
-                width=args.gen_size,
-                generator=generator, 
+                width=args.gen_size, 
                 guidance_scale=args.guidance_scale
             ).images
 
@@ -223,13 +222,13 @@ if __name__ == "__main__":
     parser.add_argument("--output_dir", type=str, default="./data/generated/cifar100/lb_50_10/pool") 
     
     parser.add_argument("--num_styles", type=int, default=1)
-    parser.add_argument("--ip_adapter_scale", type=float, default=0.6)
+    parser.add_argument("--ip_adapter_scale", type=float, default=0.45)
     parser.add_argument("--steps", type=int, default=35)
-    parser.add_GArgument("--gen_size", type=int, default=512)
+    parser.add_argument("--gen_size", type=int, default=512)
 
     parser.add_argument("--image_size", type=int, default=32)
 
-    parser.add_argument("--guidance_scale", type=float, default=8.0)
+    parser.add_argument("--guidance_scale", type=float, default=7.0)
     parser.add_argument("--seed", type=int, default=42)
 
     parser.add_argument("--batch_size", type=int, default=30, help="Number of images to generate in a batch")
