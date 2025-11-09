@@ -204,10 +204,11 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
 
             for i, image in enumerate(images):
                 image_resized = image.resize((args.image_size, args.image_size), resample=resample_filter)
+                image_with_noise = image_resized.filter(ImageFilter.GaussianBlur(radius=0.5))
             
                 img_idx = gen_count + i + 1
                 save_path = os.path.join(class_output_dir, f"{class_name}_{img_idx}.png")
-                image_resized.save(save_path, format="PNG")
+                image_with_noise.save(save_path, format="PNG")
 
             gen_count += len(images)
             total_generated += len(images)

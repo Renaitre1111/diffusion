@@ -199,24 +199,9 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             image = images[0]
             
             image_resized = image.resize((args.image_size, args.image_size), resample=Image.Resampling.BILINEAR)
-            '''
-
-            current_blur_radius = random.uniform(args.min_blur_radius, args.max_blur_radius)
-            image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=current_blur_radius))
-
-            buffer = io.BytesIO()
-            current_jpeg_quality = random.randint(args.min_jpeg_quality, args.max_jpeg_quality)
-            image_blurred.save(buffer, format="JPEG", quality=current_jpeg_quality) 
-            image_with_artifacts = Image.open(buffer)
-
-            current_noise_std = random.uniform(args.min_noise_std, args.max_noise_std)
-            noise = np.random.normal(0, current_noise_std, (args.image_size, args.image_size, 3)).astype(np.int16)
-
-            noisy = np.clip(np.array(image_with_artifacts, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
-            image_noisy = Image.fromarray(noisy, 'RGB')
-            '''
+            image_noise = image_resized.filter(ImageFilter.GaussianBlur(radius=0.5))
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
-            image_resized.save(save_path, format="PNG")
+            image_noise.save(save_path, format="PNG")
             total_generated += 1
     
     np.save(os.path.join("./data/generated/cifar100/lb_50_10", "class_to_idx.npy"), name_to_idx, allow_pickle=True)
