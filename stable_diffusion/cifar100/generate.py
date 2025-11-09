@@ -45,10 +45,10 @@ MODULE_VIEW = [
 ]
 
 GLOBAL_NEGATIVE_PROMPT = (
+    "oil painting, painting, drawing, illustration, cartoon, anime, 3d render, cgi, " 
     "people, person, human, portrait, face, skin, nsfw, nude, naked, "
     "blood, gore, violence, injury, "
     "text, caption, watermark, logo, signature, letters, words, "
-    "drawing, illustration, painting, cartoon, anime, 3d render, cgi, "
     "deformed, mutated, extra limbs, out of frame, duplicate, "
     "**high resolution, 4k, 8k, sharp, clear, professional photography, studio lighting, product shot, "
     "clean background, simple background, plain background, white background, solid color background, isolated**"
@@ -68,8 +68,9 @@ def create_modular_prompt(class_name):
     view = random.choice(MODULE_VIEW)
 
     name = class_name.replace("_", " ")
+    realism_prefix = "a real photo of, realistic photograph of, "
     
-    parts = [f"{style} {name}", f"{view}", f"{context}"]
+    parts = [f"{realism_prefix}{style} {name}", f"{view}", f"{context}"]
 
     return ", ".join(parts)
 
@@ -115,7 +116,11 @@ def get_ip_adapter_images(image_paths, num_styles):
     num_select = min(len(image_paths), num_styles)
     selected_images = random.sample(image_paths, num_select)
 
-    pil_images = [Image.open(path).convert('RGB') for path in selected_images]
+    pil_images = []
+    for path in selected_images:
+        img = Image.open(path).convert('RGB')
+        img = img.resize((224, 224), resample=Image.Resampling.LANCZOS)
+        pil_images.append(img)
     return pil_images
     
 def load_generation_pipeline(config, device="cuda"):
@@ -185,8 +190,12 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             
             image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=args.blur_radius))
 
+            buffer = io.BytesIO()
+            image_blurred.save(buffer, format="JPEG", quality=75) 
+            image_with_artifacts = Image.open(buffer)
+
             noise = np.random.normal(0, args.noise_std, (args.image_size, args.image_size, 3)).astype(np.int16)
-            noisy = np.clip(np.array(image_blurred, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
+            noisy = np.clip(np.array(image_with_artifacts, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
             image_noisy = Image.fromarray(noisy, 'RGB')
 
             save_path = os.path.join(class_output_dir, f"{class_name}_{i+1}.png")
@@ -209,8 +218,8 @@ if __name__ == "__main__":
     parser.add_argument("--gen_size", type=int, default=512)
 
     parser.add_argument("--image_size", type=int, default=32)
-    parser.add_argument("--blur_radius", type=float, default=0.5) 
-    parser.add_argument("--noise_std", type=int, default=5)  
+    parser.add_argument("--blur_radius", type=float, default=1.5) 
+    parser.add_argument("--noise_std", type=int, default=20)  
     
     args = parser.parse_args()
 
