@@ -175,26 +175,34 @@ def run_generation(pipe, class_to_gen, class_to_data, classes, args):
             ip_images = get_ip_adapter_images(image_paths, args.num_styles)
             prompt = create_modular_prompt(class_name)
 
+            generator_seed = args.seed + i + (class_idx * num_to_gen)
+            generator = torch.Generator(device=pipe.device).manual_seed(generator_seed)
+
             images = pipe(
                 prompt=prompt,
                 negative_prompt=GLOBAL_NEGATIVE_PROMPT,
                 ip_adapter_image=ip_images, 
                 num_inference_steps=num_inference_steps,
                 height=args.gen_size,
-                width=args.gen_size
+                width=args.gen_size,
+                generator=generator
             ).images
             
             image = images[0]
             
             image_resized = image.resize((args.image_size, args.image_size), resample=Image.Resampling.BILINEAR)
-            
-            image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=args.blur_radius))
+
+            current_blur_radius = random.uniform(args.min_blur_radius, args.max_blur_radius)
+            image_blurred = image_resized.filter(ImageFilter.GaussianBlur(radius=current_blur_radius))
 
             buffer = io.BytesIO()
-            image_blurred.save(buffer, format="JPEG", quality=75) 
+            current_jpeg_quality = random.randint(args.min_jpeg_quality, args.max_jpeg_quality)
+            image_blurred.save(buffer, format="JPEG", quality=current_jpeg_quality) 
             image_with_artifacts = Image.open(buffer)
 
-            noise = np.random.normal(0, args.noise_std, (args.image_size, args.image_size, 3)).astype(np.int16)
+            current_noise_std = random.uniform(args.min_noise_std, args.max_noise_std)
+            noise = np.random.normal(0, current_noise_std, (args.image_size, args.image_size, 3)).astype(np.int16)
+
             noisy = np.clip(np.array(image_with_artifacts, dtype=np.int16) + noise, 0, 255).astype(np.uint8)
             image_noisy = Image.fromarray(noisy, 'RGB')
 
@@ -217,11 +225,26 @@ if __name__ == "__main__":
     parser.add_argument("--steps", type=int, default=35)
     parser.add_argument("--gen_size", type=int, default=512)
 
+    parser.add_argument("--seed", type=int, default=42)
+
     parser.add_argument("--image_size", type=int, default=32)
-    parser.add_argument("--blur_radius", type=float, default=1.5) 
-    parser.add_argument("--noise_std", type=int, default=20)  
+
+    parser.add_argument("--min_blur_radius", type=float, default=0.1) 
+    parser.add_argument("--max_blur_radius", type=float, default=1.2) 
+    
+    parser.add_argument("--min_noise_std", type=float, default=2.0)  
+    parser.add_argument("--max_noise_std", type=float, default=15.0)
+    
+    parser.add_argument("--min_jpeg_quality", type=int, default=75)  
+    parser.add_argument("--max_jpeg_quality", type=int, default=95)
     
     args = parser.parse_args()
+
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
