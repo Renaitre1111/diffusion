@@ -262,7 +262,7 @@ class DAWN(ImbAlgorithmBase):
 
             # self.warm_up+1~ use labeled (include the pseudo labeled) data and continue select unlabeled data
             # update the labeled (include the pseudo labeled) dataset and labeled (include the pseudo labeled) data distribution and selected unlabeled data distribution
-            elif self.epoch == self.warmup:
+            elif self.epoch == self.warm_up:
                 self.adaptive_lb_dest_loader = self.loader_dict['train_lb']
                 self.lb_select_ulb_dist = self.lb_dist
                 self.select_ulb_dist = torch.ones(self.num_classes).cuda(self.args.gpu)
@@ -535,9 +535,9 @@ class DAWN(ImbAlgorithmBase):
 
                     w_i = torch.zeros_like(probs_x_ulb_w.amax(dim=-1))
 
-                    w_i[mask_band1] = 0.5 + 0.5 * s_energy_quality[mask_band1]
-                    w_i[mask_band2] = 0.3 + 0.3 * s_energy_quality[mask_band2]
-                    w_i[mask_band3] = 0.1 + 0.1 * s_energy_quality[mask_band3]
+                    w_i[mask_band1] = 0.7 + 0.7 * s_energy_quality[mask_band1]
+                    w_i[mask_band2] = 0.5 + 0.5 * s_energy_quality[mask_band2]
+                    w_i[mask_band3] = 0.2 + 0.2 * s_energy_quality[mask_band3]
                 
                 aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
                 aux_loss_lb = self.ce_loss(aux_logits_x_lb_w, lb_for_aux, reduction='mean')
