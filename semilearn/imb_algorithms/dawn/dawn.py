@@ -262,6 +262,11 @@ class DAWN(ImbAlgorithmBase):
 
             # self.warm_up+1~ use labeled (include the pseudo labeled) data and continue select unlabeled data
             # update the labeled (include the pseudo labeled) dataset and labeled (include the pseudo labeled) data distribution and selected unlabeled data distribution
+            elif self.epoch == self.warmup:
+                self.adaptive_lb_dest_loader = self.loader_dict['train_lb']
+                self.lb_select_ulb_dist = self.lb_dist
+                self.select_ulb_dist = torch.ones(self.num_classes).cuda(self.args.gpu)
+            
             else:
                 if self.epoch % self.memory_step == 0 and self.select_ulb_idx is not None:
                     self.current_x = None
@@ -526,11 +531,13 @@ class DAWN(ImbAlgorithmBase):
 
                     mask_band1 = mask_high_conf & mask_consistent
                     mask_band2 = (mask_high_conf & ~mask_consistent) | (~mask_high_conf & mask_consistent)
+                    mask_band3 = ~mask_high_conf & ~mask_consistent
 
                     w_i = torch.zeros_like(probs_x_ulb_w.amax(dim=-1))
 
                     w_i[mask_band1] = 0.5 + 0.5 * s_energy_quality[mask_band1]
                     w_i[mask_band2] = 0.3 + 0.3 * s_energy_quality[mask_band2]
+                    w_i[mask_band3] = 0.1 + 0.1 * s_energy_quality[mask_band3]
                 
                 aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
                 aux_loss_lb = self.ce_loss(aux_logits_x_lb_w, lb_for_aux, reduction='mean')
@@ -569,5 +576,5 @@ class DAWN(ImbAlgorithmBase):
             SSL_Argument('--smoothing', float, 0.1),
             SSL_Argument('--generated_data_dir', str, './data/generated/cifar100/lb_50_10'),
             SSL_Argument('--candidate_pool_dir', str, './data/generated/cifar100/lb_50_10'),
-            SSL_Argument('--energy_cutoff', float, -3.0)
+            SSL_Argument('--energy_cutoff', float, -5.0)
         ]
