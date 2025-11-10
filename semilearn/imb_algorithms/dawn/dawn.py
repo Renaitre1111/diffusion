@@ -376,19 +376,6 @@ class DAWN(ImbAlgorithmBase):
                         new_gen_idx = np.array([])
                         gen_one_hot_y = np.array([]).reshape(0, self.num_classes)
 
-                    '''
-                    # update the current labeled and pseudo labeled data
-                    self.current_idx = np.concatenate((self.lb_idx, self.select_ulb_idx), axis=0)
-                    self.current_x = self.data[self.current_idx]
-                    self.current_y = np.concatenate((self.targets[self.lb_idx], self.select_ulb_pseudo_label), axis=0)
-                    self.current_noise_y = np.concatenate((self.noised_targets[self.lb_idx], self.select_ulb_pseudo_label), axis=0)
-                    current_one_hot_y = np.full((len(self.targets[self.lb_idx]), self.num_classes), self.args.smoothing / (self.num_classes - 1))
-                    current_one_hot_y[np.arange(len(self.targets[self.lb_idx])), self.targets[self.lb_idx]] = 1.0 - self.args.smoothing
-                    current_one_hot_noise_y = np.full((len(self.noised_targets[self.lb_idx]), self.num_classes), self.args.smoothing / (self.num_classes - 1))
-                    current_one_hot_noise_y[np.arange(len(self.noised_targets[self.lb_idx])), self.noised_targets[self.lb_idx]] = 1.0 - self.args.smoothing
-                    self.current_one_hot_y = np.concatenate((current_one_hot_y, self.select_ulb_pseudo_label_distribution), axis=0)
-                    self.current_one_hot_noise_y = np.concatenate((current_one_hot_noise_y, self.select_ulb_pseudo_label_distribution), axis=0)
-                    '''
                     base_lb_idx = self.lb_idx
                     base_ulb_idx = self.select_ulb_idx.cpu().numpy()
 
@@ -543,7 +530,7 @@ class DAWN(ImbAlgorithmBase):
                     w_i = torch.zeros_like(probs_x_ulb_w.amax(dim=-1))
 
                     w_i[mask_band1] = 0.5 + 0.5 * s_energy_quality[mask_band1]
-                    w_i[mask_band2] = 0.1 + 0.3 * s_energy_quality[mask_band2]
+                    w_i[mask_band2] = 0.3 + 0.3 * s_energy_quality[mask_band2]
                 
                 aux_pseudo_label_w = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", logits=self.compute_prob(aux_logits_x_ulb_w.detach()), use_hard_label=self.use_hard_label, T=self.T, softmax=False)
                 aux_loss_lb = self.ce_loss(aux_logits_x_lb_w, lb_for_aux, reduction='mean')
@@ -582,5 +569,5 @@ class DAWN(ImbAlgorithmBase):
             SSL_Argument('--smoothing', float, 0.1),
             SSL_Argument('--generated_data_dir', str, './data/generated/cifar100/lb_50_10'),
             SSL_Argument('--candidate_pool_dir', str, './data/generated/cifar100/lb_50_10'),
-            SSL_Argument('--energy_cutoff', float, -5.0)
+            SSL_Argument('--energy_cutoff', float, -3.0)
         ]
