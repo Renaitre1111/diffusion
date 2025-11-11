@@ -574,7 +574,7 @@ class DAWN(ImbAlgorithmBase):
             SSL_Argument('--warm_up', int, 30),
             SSL_Argument('--alpha', float, 1.0),
             SSL_Argument('--smoothing', float, 0.1),
-            SSL_Argument('--generated_data_dir', str, './data/generated/cifar100/lb_50_10'),
-            SSL_Argument('--candidate_pool_dir', str, './data/generated/cifar100/lb_50_10'),
+            SSL_Argument('--generated_data_dir', str, './data/generated/cifar100/lb_50_15'),
+            SSL_Argument('--candidate_pool_dir', str, './data/generated/cifar100/lb_50_15'),
             SSL_Argument('--energy_cutoff', float, -5.0)
         ]
